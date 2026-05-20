@@ -84,7 +84,6 @@ def modulo_sacos():
     st.markdown(f"### 🎯 Tu Misión: {' '.join(puntos_visuales)} = ?", unsafe_allow_html=True)
     st.divider()
 
-    # --- UNIFICACIÓN DE ACCIÓN ---
     banner_resuelve_lo_siguiente()
     operacion_plana = " ".join([f"{n:+} " for n in soldados]).strip()
     st.code(f"Operación Real de Examen: {operacion_plana}", language="text")
@@ -157,7 +156,6 @@ def modulo_ecuaciones():
     p = st.session_state.pregunta
     st.code(f"Candado: ({p['a']})x + ({p['b']})y = {p['c']}")
 
-    # --- UNIFICACIÓN DE ACCIÓN ---
     banner_resuelve_lo_siguiente()
     st.code(f"Sistema de Examen: ({p['a']})x + ({p['b']})y = {p['c']}", language="text")
     st.write("")
@@ -211,7 +209,6 @@ def modulo_estadistica():
     st.success(f"🍿 **Tus números en la fila:** `{datos}`")
     st.divider()
 
-    # --- UNIFICACIÓN DE ACCIÓN ---
     banner_resuelve_lo_siguiente()
     st.code(f"Conjunto de Datos de Examen: {datos}", language="text")
     st.write("")
@@ -362,7 +359,6 @@ def modulo_regla_de_tres():
     components.html(html_mapa, height=240)
     st.write("")
 
-    # --- UNIFICACIÓN DE ACCIÓN ---
     banner_resuelve_lo_siguiente()
     st.code(f"Proporción de Examen: {a1} -> {b1} | {a2} -> ❓", language="text")
     st.write("")
@@ -391,7 +387,6 @@ def modulo_geometria_castillo():
     )
     st.divider()
 
-    # ================= MISIÓN 1: PERÍMETROS =================
     if mision == "Misión 1: La Muralla (Perímetros)":
         st.markdown("""
         ### 🛡️ Contorno de la Fortaleza
@@ -441,7 +436,6 @@ def modulo_geometria_castillo():
         components.html(html_castillo, height=240)
         st.write("")
 
-        # --- UNIFICACIÓN DE ACCIÓN ---
         banner_resuelve_lo_siguiente()
         st.code(f"Problema de Examen: Perímetro de Polígono Irregular (6 lados)", language="text")
         st.write("")
@@ -458,7 +452,6 @@ def modulo_geometria_castillo():
             if 'pregunta_geo' in st.session_state: del st.session_state.pregunta_geo
             st.rerun()
 
-    # ================= MISIÓN 2: ÁREAS =================
     elif mision == "Misión 2: El Patio de Armas (Áreas)":
         st.markdown("""
         ### 🧱 Pavimentar el Patio de Armas
@@ -559,7 +552,6 @@ def modulo_geometria_castillo():
         components.html(html_patio, height=190)
         st.write("")
 
-        # --- UNIFICACIÓN DE ACCIÓN ---
         banner_resuelve_lo_siguiente()
         if a['tipo'] == "rectángulo": st.code(f"Fórmula de Examen: Área = {b}m × {h}m", language="text")
         elif a['tipo'] == "triángulo": st.code(f"Fórmula de Examen: Área = ({b}m × {h}m) ÷ 2", language="text")
@@ -579,16 +571,10 @@ def modulo_geometria_castillo():
             if 'pregunta_area' in st.session_state: del st.session_state.pregunta_area
             st.rerun()
 
-    # ================= MISIÓN 3: PITÁGORAS =================
     else:
         st.markdown("""
         ### 🪜 La Escalera de Asalto (Teorema de Pitágoras)
         Necesitamos apoyar una escalera para alcanzar la ventana de la torre. Conocemos los bloques que mide el suelo y los que mide la pared.
-        
-        **💡 Cómo resolverlo sin matemáticas raras (Paso a Paso):**
-        1. **Haz los cuadrados:** Multiplica el número del suelo por sí mismo, y el de la pared por sí mismo.
-        2. **Júntalos:** Suma esos dos resultados.
-        3. **Busca el lado:** Piensa qué número multiplicado **por sí mismo** te da ese total. ¡Esa es la longitud de tu escalera!
         """)
 
         if 'pregunta_pit' not in st.session_state:
@@ -614,13 +600,11 @@ def modulo_geometria_castillo():
                 • Cuadrado del suelo: {p['b']} × {p['b']} = <b>{p['b']*p['b']}</b><br>
                 • Cuadrado de la pared: {p['h']} × {p['h']} = <b>{p['h']*p['h']}</b><br>
                 • Bloques totales combinados: {p['b']*p['b']} + {p['h']*p['h']} = <b>{p['b']*p['b'] + p['h']*p['h']}</b><br>
-                • <i>Busca qué número multiplicado por sí mismo da {p['b']*p['b'] + p['h']*p['h']}...</i>
             </div>
         </div>
         """
         components.html(html_torre, height=360)
 
-        # --- UNIFICACIÓN DE ACCIÓN ---
         banner_resuelve_lo_siguiente()
         st.code(f"Ecuación Teórica de Examen: c² = {p['b']}² + {p['h']}²", language="text")
         st.write("")
@@ -665,7 +649,7 @@ with st.sidebar:
         * **(5)(4)** o **5 * 4** -> Significa sumar el 5 cuatro veces ($5 + 5 + 5 + 5 = 20$).
         
         **➗ Dividir:**
-        * **20 / 4** o **20 ÷ 4** -> Repartir 20 cosas entre 4 personas in partes iguales.
+        * **20 / 4** o **20 ÷ 4** -> Repartir 20 cosas entre 4 personas en partes iguales.
         
         **⏹️ Elevar al Cuadrado (²):**
         * **$5^2$** -> Es multiplicar el número **por sí mismo** ($5 \\times 5 = 25$). 
@@ -691,8 +675,14 @@ elif seleccion_final == "Sistemas 2x2":
 elif seleccion_final == "Estadística": 
     modulo_estadistica()
 elif seleccion_final == "Magia del Punto": 
+    # Inyectamos banner y examen de forma directa antes del renderizado nativo
+    banner_resuelve_lo_siguiente()
+    st.code("Problema de Examen: Cálculo de Porcentajes Rápidos (Método del Punto Decimal)", language="text")
     modulo_porcentajes_streamlit()
 elif seleccion_final == "Porcentajes Combinados":
+    # Inyectamos banner y examen de forma directa antes del renderizado nativo
+    banner_resuelve_lo_siguiente()
+    st.code("Problema de Examen: Multiplicación de Descuentos e Impuestos Consecutivos", language="text")
     modulo_combinados_streamlit()
 elif seleccion_final == "Regla de Tres": 
     modulo_regla_de_tres()
