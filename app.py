@@ -646,6 +646,10 @@ elif seleccion_final == "La Forja (Potencias y Raíces)":
     modulo_forja_streamlit()
 elif seleccion_final == "Leyes del Trono (Jerarquía Básica)":
     modulo_jerarquia_basica_streamlit()
+elif seleccion_final == "Asalto a Fortalezas (Agrupación)":
+    # Aquí mandamos a llamar al módulo de los paréntesis y corchetes
+    from animacion_jerarquia import modulo_jerarquia_streamlit
+    modulo_jerarquia_streamlit()
 elif seleccion_final == "Sistemas 2x2": 
     modulo_ecuaciones()
 elif seleccion_final == "Estadística": 
@@ -656,5 +660,5 @@ elif seleccion_final == "Porcentajes Combinados":
     modulo_combinados_streamlit()
 elif seleccion_final == "Regla de Tres": 
     modulo_regla_de_tres()
-else:
+elif seleccion_final == "Las Crónicas del Castillo":
     modulo_geometria_castillo()
