@@ -30,13 +30,13 @@ def modulo_forja_streamlit():
     
     st.divider()
     
-    # --- INTERFAZ VISUAL: AJUSTE DE ESPACIOS Y DEGRADADO DE INTERSECCIÓN ---
+    # --- INTERFAZ VISUAL: CUADRÍCULA COMPACTA PARA EVITAR DESBORDES ---
     cuadritos_html = ""
     base_dinamica = r['base']
     
     for fila in range(base_dinamica):
         for col in range(base_dinamica):
-            # Esquina inferior izquierda (Intersección: Última fila, Primera columna)
+            # Esquina inferior izquierda (Intersección)
             if fila == base_dinamica - 1 and col == 0:
                 estilo_color = "background: linear-gradient(135deg, #f472b6, #3b82f6);"
             # Última fila completa: La Base del Largo (Azul)
@@ -59,37 +59,36 @@ def modulo_forja_streamlit():
         padding: 15px; 
         border-radius: 12px; 
         border: 2px solid #475569;
-        max-width: 400px;
+        max-width: 360px;
         margin: 0 auto;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
         font-family: 'Segoe UI', sans-serif;
         box-sizing: border-box;
     ">
-        <div style="color: #ffffff; font-weight: bold; margin-bottom: 20px; font-size: 13px; text-align: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
+        <div style="color: #ffffff; font-weight: bold; margin-bottom: 15px; font-size: 13px; text-align: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
             📐 Plano: Cuarto Cuadrado de <span style="color: #60a5fa;">{base_dinamica}</span> por <span style="color: #f472b6;">{base_dinamica}</span>
         </div>
         
-        <table style="width: 100%; border-collapse: collapse; box-sizing: border-box;">
+        <table style="margin: 0 auto; border-collapse: collapse; box-sizing: border-box;">
             <tr>
-                <td style="vertical-align: middle; width: 50px; min-width: 50px; padding-right: 10px; text-align: center; box-sizing: border-box;">
+                <td style="vertical-align: middle; padding-right: 12px; text-align: center;">
                     <div style="
                         color: #f472b6; 
                         font-weight: bold; 
                         font-size: 13px;
-                        writing-mode: vertical-rl;
-                        transform: rotate(180deg);
+                        writing-mode: vertical-lr;
                         white-space: nowrap;
                         display: inline-block;
-                        line-height: 1;
+                        letter-spacing: 1px;
                     ">
                         ← Ancho: {operacion_eje} →
                     </div>
                 </td>
                 
-                <td style="vertical-align: bottom; padding-bottom: 10px;">
+                <td style="vertical-align: bottom; width: 220px; max-width: 220px;">
                     <div style="
                         background-color: #0f172a;
-                        padding: 10px;
+                        padding: 8px;
                         border-radius: 8px;
                         border: 1px solid #334155;
                         display: grid;
@@ -103,9 +102,9 @@ def modulo_forja_streamlit():
                 </td>
             </tr>
             <tr>
-                <td style="width: 50px;"></td>
-                <td style="padding-top: 10px; text-align: center; box-sizing: border-box;">
-                    <div style="color: #60a5fa; font-weight: bold; font-size: 13px; white-space: nowrap; line-height: 1;">
+                <td></td>
+                <td style="padding-top: 10px; text-align: center;">
+                    <div style="color: #60a5fa; font-weight: bold; font-size: 13px; white-space: nowrap;">
                         ← Largo: {operacion_eje} →
                     </div>
                 </td>
@@ -113,13 +112,13 @@ def modulo_forja_streamlit():
         </table>
         
         <div style="color: #94a3b8; font-size: 11px; text-align: center; margin-top: 15px; line-height: 15px;">
-            Multiplica la base <span style="color: #60a5fa; font-weight:bold;">Azul</span> por la altura <span style="color: #f472b6; font-weight:bold;">Rosa</span>. La esquina <span style="background: linear-gradient(45deg, #f472b6, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:bold;">Fusión</span> une ambos caminos.
+            Multiplica la base <span style="color: #60a5fa; font-weight:bold;">Azul</span> por la altura <span style="color: #f472b6; font-weight:bold;">Rosa</span>. La esquina <span style="background: linear-gradient(135deg, #f472b6, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:bold;">Fusión</span> une ambos caminos.
         </div>
     </div>
     """
     
-    # Mantenemos los 380px de altura para que el texto inferior no se corte nunca con el borde del componente
-    st.components.v1.html(html_constructor, height=380)
+    # Aumentamos ligeramente la altura total asignada al iframe para que sobre espacio abajo
+    st.components.v1.html(html_constructor, height=400)
     
     # --- SECCIÓN DE PREGUNTAS ---
     st.subheader("⚔️ Misión 1: Forjar la Potencia")
