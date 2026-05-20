@@ -30,29 +30,29 @@ def modulo_forja_streamlit():
     
     st.divider()
     
-    # --- INTERFAZ VISUAL: PLANO DEL PISO CON BORDES COLOREADOS ---
-    # Generamos los cuadritos coloreando la base (azul) y la altura izquierda (rosa)
+    # --- INTERFAZ VISUAL: TABLA RESPONSIVA CON INTERSECCIÓN DEGRADADA ---
     cuadritos_html = ""
     base_dinamica = r['base']
     
     for fila in range(base_dinamica):
         for col in range(base_dinamica):
-            # Si es el cuadrito de la esquina inferior izquierda (intersección)
+            # Esquina inferior izquierda: La Intersección Perfecta (Rosa + Azul)
             if fila == base_dinamica - 1 and col == 0:
-                color = "#3b82f6"  # Azul (predomina la base o mezcla)
-            # Si es de la última fila (la base del dibujo)
+                estilo_color = "background: linear-gradient(45deg, #f472b6, #3b82f6);"
+            # Última fila completa: La Base (Azul)
             elif fila == base_dinamica - 1:
-                color = "#3b82f6"  # Azul para el Largo
-            # Si es de la primera columna (el lado izquierdo)
+                estilo_color = "background-color: #3b82f6;"
+            # Primera columna completa: El Lado Izquierdo (Rosa)
             elif col == 0:
-                color = "#f472b6"  # Rosa para el Ancho
-            # Bloques internos de relleno
+                color = "#f472b6"
+                estilo_color = "background-color: #f472b6;"
+            # Bloques internos de relleno (Ámbar)
             else:
-                color = "#f59e0b"  # Ámbar original
+                estilo_color = "background-color: #f59e0b;"
                 
-            cuadritos_html += f'<div style="background-color: {color}; border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
+            cuadritos_html += f'<div style="{estilo_color} border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
 
-    # Texto exacto de la operación (ej: "2 × 2")
+    # Texto exacto del eje (ej: "6 × 6")
     operacion_eje = f"{base_dinamica} × {base_dinamica}"
 
     html_constructor = f"""
@@ -61,7 +61,7 @@ def modulo_forja_streamlit():
         padding: 15px; 
         border-radius: 12px; 
         border: 2px solid #475569;
-        max-width: 360px;
+        max-width: 380px;
         margin: 0 auto;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
         font-family: 'Segoe UI', sans-serif;
@@ -71,57 +71,57 @@ def modulo_forja_streamlit():
             📐 Plano: Cuarto Cuadrado de <span style="color: #60a5fa;">{base_dinamica}</span> por <span style="color: #f472b6;">{base_dinamica}</span>
         </div>
         
-        <div style="position: relative; width: 100%; padding-left: 30px; padding-bottom: 30px; box-sizing: border-box;">
-            
-            <div style="
-                position: absolute; 
-                left: -5px; 
-                top: 40%; 
-                transform: translateY(-50%) rotate(-90deg); 
-                transform-origin: center center;
-                color: #f472b6; 
-                font-weight: bold; 
-                font-size: 13px;
-                white-space: nowrap;
-            ">
-                ← Ancho: {operacion_eje} →
-            </div>
-            
-            <div style="
-                background-color: #0f172a;
-                padding: 10px;
-                border-radius: 8px;
-                border: 1px solid #334155;
-                display: grid;
-                grid-template-columns: repeat({base_dinamica}, 1fr);
-                gap: 4px;
-                width: 100%;
-                box-sizing: border-box;
-            ">
-                {cuadritos_html}
-            </div>
-            
-            <div style="
-                position: absolute; 
-                bottom: 5px; 
-                left: 30px; 
-                right: 0;
-                text-align: center; 
-                color: #60a5fa; 
-                font-weight: bold; 
-                font-size: 13px;
-            ">
-                ← Largo: {operacion_eje} →
-            </div>
-        </div>
+        <table style="width: 100%; border-collapse: collapse; margin: 0 auto;">
+            <tr>
+                <td style="vertical-align: middle; padding-right: 12px; width: 30px;">
+                    <div style="
+                        color: #f472b6; 
+                        font-weight: bold; 
+                        font-size: 13px;
+                        writing-mode: vertical-rl;
+                        transform: rotate(180deg);
+                        white-space: nowrap;
+                        text-align: center;
+                        margin: 0 auto;
+                    ">
+                        ← Ancho: {operacion_eje} →
+                    </div>
+                </td>
+                
+                <td style="vertical-align: bottom;">
+                    <div style="
+                        background-color: #0f172a;
+                        padding: 10px;
+                        border-radius: 8px;
+                        border: 1px solid #334155;
+                        display: grid;
+                        grid-template-columns: repeat({base_dinamica}, 1fr);
+                        gap: 4px;
+                        width: 100%;
+                        box-sizing: border-box;
+                    ">
+                        {cuadritos_html}
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="padding-top: 12px; text-align: center;">
+                    <div style="color: #60a5fa; font-weight: bold; font-size: 13px; white-space: nowrap;">
+                        ← Largo: {operacion_eje} →
+                    </div>
+                </td>
+            </tr>
+        </table>
         
-        <div style="color: #94a3b8; font-size: 11px; text-align: center; margin-top: 10px; line-height: 15px;">
-            Multiplica los bloques <span style="color: #60a5fa; font-weight:bold;">Azules</span> de la base por los <span style="color: #f472b6; font-weight:bold;">Rosas</span> del lado para saber el total.
+        <div style="color: #94a3b8; font-size: 11px; text-align: center; margin-top: 15px; line-height: 15px;">
+            Multiplica la base <span style="color: #60a5fa; font-weight:bold;">Azul</span> por la altura <span style="color: #f472b6; font-weight:bold;">Rosa</span>. La esquina <span style="background: linear-gradient(45deg, #f472b6, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:bold;">Degradada</span> es donde se unen.
         </div>
     </div>
     """
     
-    st.components.v1.html(html_constructor, height=360)
+    # Aumentamos a 380 el contenedor de Streamlit para asegurar que la tabla respire completa abajo
+    st.components.v1.html(html_constructor, height=380)
     
     # --- SECCIÓN DE PREGUNTAS ---
     st.subheader("⚔️ Misión 1: Forjar la Potencia")
