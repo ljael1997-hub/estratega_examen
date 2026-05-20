@@ -21,21 +21,21 @@ if modo_daltonico:
     TEXTO_POS = "🔵 Saco Azul (Tengo +)"
     TEXTO_NEG = "🟠 Saco Naranja (Debo -)"
     
-    st.markdown(f"""
+    st.markdown("""
         <style>
-        button.step-up, button.step-down {{ display: none; }}
-        div[data-baseweb="input"] > div {{ border-radius: 4px; }}
-        input::placeholder {{ color: #888 !important; }}
-        div[data-testid="stNotificationVisibility"] > div:has(div[class*="st-emotion-cache-16ids93"]) {{
+        button.step-up, button.step-down { display: none; }
+        div[data-baseweb="input"] > div { border-radius: 4px; }
+        input::placeholder { color: #888 !important; }
+        div[data-testid="stNotificationVisibility"] > div:has(div[class*="st-emotion-cache-16ids93"]) {
             background-color: rgba(0, 95, 204, 0.1) !important;
             color: #005fcc !important;
             border-left: 5px solid #005fcc !important;
-        }}
-        div[data-testid="stNotificationVisibility"] > div:has(div[class*="st-emotion-cache-1z7809x"]) {{
+        }
+        div[data-testid="stNotificationVisibility"] > div:has(div[class*="st-emotion-cache-1z7809x"]) {
             background-color: rgba(217, 119, 6, 0.1) !important;
             color: #d97706 !important;
             border-left: 5px solid #d97706 !important;
-        }}
+        }
         </style>
     """, unsafe_allow_html=True)
 else:
@@ -187,7 +187,7 @@ def modulo_estadistica():
     
     datos = st.session_state.datos_est
     gid = st.session_state.game_id_est
-    es_par = len(datos) % 2 == 0
+    en_par = len(datos) % 2 == 0
 
     st.success(f"🍿 **Tus números en la fila:** `{datos}`")
     st.divider()
@@ -209,7 +209,7 @@ def modulo_estadistica():
     st.error("🚨 **¡REGLA DE ORO!** Tienes que formarlos por tamaño (del más chico al más grande) o el resultado estará MAL.")
     st.text_input("Fórmalos aquí (ordenados):", key=f"orden_{gid}", placeholder="Ej: 1, 2, 5...")
     
-    if es_par: st.warning(f"💡 **Hack:** Tienes 2 números en medio. ¡Súmalos y divídelos entre 2!")
+    if en_par: st.warning(f"💡 **Hack:** Tienes 2 números en medio. ¡Súmalos y divídelos entre 2!")
     else: st.warning(f"💡 **Hack:** Tienes solo 1 número en el centro. ¡Ese mero es!")
     user_mediana = st.number_input("¿Quién quedó en medio?", step=0.1, key=f"mediana_{gid}", value=None)
 
@@ -246,7 +246,6 @@ def modulo_regla_de_tres():
     Las flechas te indican qué números debes **multiplicar**, y la flecha final te dice entre cuál número debes **dividir** el resultado.
     """)
 
-    # Inicializamos la pregunta si no existe en la sesión
     if 'pregunta_prop' not in st.session_state:
         tipo = random.choice(["directa", "inversa"])
         if tipo == "directa":
@@ -273,27 +272,23 @@ def modulo_regla_de_tres():
     p = st.session_state.pregunta_prop
     a1, b1, a2 = p['datos']
 
-    # Planteamiento limpio y estructurado de forma matemática
     st.info(f"""
     📋 **Planteamiento del Reto Razonado:**
     {p['prob_linea']}
     **{p['prob_pregunta']}**
     """)
 
-    # --- DISEÑO INTEGRADO CON INDICADOR DE TIPO Y FLECHAS VECTORIALES ---
     if p['tipo'] == "directa":
         html_mapa = f"""
-        <div style="background-color: #1e293b; padding: 20px 25px 25px 25px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
+        <div style="background-color: #1e293b; padding: 20px 25px 25px 25px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
             <div style="background-color: rgba(96, 165, 250, 0.15); color: #60a5fa; border: 1px solid #60a5fa; padding: 4px; border-radius: 6px; font-size: 14px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
                 🎯 Regla de Tres Directa
             </div>
-            
             <div style="position: relative; height: 140px; width: 100%;">
                 <div style="position: absolute; top: 0px; left: 30px; font-size: 28px; font-weight: bold; color: #60a5fa;">{a1}</div>
                 <div style="position: absolute; top: 0px; right: 30px; font-size: 28px; font-weight: bold; color: white;">{b1}</div>
                 <div style="position: absolute; bottom: 0px; left: 30px; font-size: 28px; font-weight: bold; color: white;">{a2}</div>
                 <div style="position: absolute; bottom: 0px; right: 30px; font-size: 28px; font-weight: bold; color: #ec4899;">❓</div>
-                
                 <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
                     <defs>
                         <marker id="arrow-orange" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -306,7 +301,6 @@ def modulo_regla_de_tres():
                     <line x1="60" y1="110" x2="225" y2="30" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow-orange)" stroke-dasharray="4"/>
                     <line x1="220" y1="25" x2="65" y2="25" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow-blue)"/>
                 </svg>
-                
                 <div style="position: absolute; top: 65px; left: 125px; background: #f59e0b; color: #0f172a; padding: 2px 8px; border-radius: 4px; font-size: 13px; font-weight: bold;">× Multiplicar</div>
                 <div style="position: absolute; top: -12px; left: 110px; background: #3b82f6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 13px; font-weight: bold;">÷ Dividir</div>
             </div>
@@ -314,17 +308,15 @@ def modulo_regla_de_tres():
         """
     else:
         html_mapa = f"""
-        <div style="background-color: #1e293b; padding: 20px 25px 25px 25px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
+        <div style="background-color: #1e293b; padding: 20px 25px 25px 25px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
             <div style="background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; padding: 4px; border-radius: 6px; font-size: 14px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
                 🔄 Regla de Tres Inversa
             </div>
-            
             <div style="position: relative; height: 140px; width: 100%;">
                 <div style="position: absolute; top: 0px; left: 30px; font-size: 28px; font-weight: bold; color: #60a5fa;">{a1}</div>
                 <div style="position: absolute; top: 0px; right: 30px; font-size: 28px; font-weight: bold; color: white;">{b1}</div>
                 <div style="position: absolute; bottom: 0px; left: 30px; font-size: 28px; font-weight: bold; color: white;">{a2}</div>
                 <div style="position: absolute; bottom: 0px; right: 30px; font-size: 28px; font-weight: bold; color: #ec4899;">❓</div>
-                
                 <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
                     <defs>
                         <marker id="arrow-orange2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -337,14 +329,13 @@ def modulo_regla_de_tres():
                     <line x1="75" y1="20" x2="210" y2="20" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow-orange2)"/>
                     <line x1="220" y1="30" x2="60" y2="110" stroke="#3b82f6" stroke-width="3" marker-end="url(#arrow-blue2)"/>
                 </svg>
-                
                 <div style="position: absolute; top: -12px; left: 100px; background: #f59e0b; color: #0f172a; padding: 2px 8px; border-radius: 4px; font-size: 13px; font-weight: bold;">× Multiplicar</div>
                 <div style="position: absolute; top: 65px; left: 125px; background: #3b82f6; color: white; padding: 2px 8px; border-radius: 4px; font-size: 13px; font-weight: bold;">÷ Dividir</div>
             </div>
         </div>
         """
 
-    components.html(html_mapa, height=240) # Aumenté ligeramente la altura por el letrero superior
+    components.html(html_mapa, height=240)
     st.write("")
 
     user_resp = st.number_input("¿Cuál es el valor final de la incógnita (❓)?", step=1, value=None, key="prop_input")
@@ -360,11 +351,11 @@ def modulo_regla_de_tres():
         if 'pregunta_prop' in st.session_state: del st.session_state.pregunta_prop
         st.rerun()
 
- # --- 5. MÓDULO: GEOMETRÍA (Las Crónicas del Castillo) ---
+
+# --- 5. MÓDULO: GEOMETRÍA (Las Crónicas del Castillo) ---
 def modulo_geometria_castillo():
     st.title("🏰 Las Crónicas del Castillo (Geometría)")
     
-    # Menú para que el alumno elija qué juego jugar dentro del castillo
     mision = st.selectbox(
         "🗺️ Elige qué zona del Castillo quieres explorar:",
         ["Misión 1: La Muralla (Perímetros)", "Misión 2: El Patio de Armas (Áreas)", "Misión 3: La Escalera de la Torre (Pitágoras)"]
@@ -598,10 +589,10 @@ def modulo_geometria_castillo():
             if 'pregunta_pit' in st.session_state: del st.session_state.pregunta_pit
             st.rerun()
 
+
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = ["Duelo de Sacos", "La Forja (Potencias y Raíces)", "Leyes del Trono (Jerarquía Básica)", "Asalto a Fortalezas (Agrupación)", "Sistemas 2x2", "Estadística", "Magia del Punto", "Porcentajes Combinados", "Regla de Tres", "Las Crónicas del Castillo"]
 
-# CORRECCIÓN CENTRAL: Reincorporación del componente nativo de control de menú de barra lateral
 with st.sidebar:
     st.title("La Estratega")
     seleccion_final = st.radio(
@@ -638,8 +629,6 @@ with st.sidebar:
 
 
 # --- RENDERIZADO DE LOS JUEGOS ---
-st.divider()
-
 if seleccion_final == "Duelo de Sacos": 
     modulo_sacos()
 elif seleccion_final == "La Forja (Potencias y Raíces)":
@@ -647,7 +636,6 @@ elif seleccion_final == "La Forja (Potencias y Raíces)":
 elif seleccion_final == "Leyes del Trono (Jerarquía Básica)":
     modulo_jerarquia_basica_streamlit()
 elif seleccion_final == "Asalto a Fortalezas (Agrupación)":
-    # Aquí mandamos a llamar al módulo de los paréntesis y corchetes
     from animacion_jerarquia import modulo_jerarquia_streamlit
     modulo_jerarquia_streamlit()
 elif seleccion_final == "Sistemas 2x2": 
@@ -660,5 +648,5 @@ elif seleccion_final == "Porcentajes Combinados":
     modulo_combinados_streamlit()
 elif seleccion_final == "Regla de Tres": 
     modulo_regla_de_tres()
-elif seleccion_final == "Las Crónicas del Castillo":
+else:
     modulo_geometria_castillo()
