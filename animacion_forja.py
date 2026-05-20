@@ -72,7 +72,7 @@ def modulo_forja_streamlit():
     </div>
     """
     # Altura de 300px es perfecta para que respire la caja sin empujar las preguntas
-    st.components.v1.html(html_content=html_constructor, height=300)
+    st.components.v1.html(html_constructor, height=300)
     
     # --- SECCIÓN DE PREGUNTAS ---
     st.subheader("⚔️ Misión 1: Forjar la Potencia")
