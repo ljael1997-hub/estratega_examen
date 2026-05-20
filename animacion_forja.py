@@ -30,12 +30,14 @@ def modulo_forja_streamlit():
     
     st.divider()
     
-    # --- INTERFAZ VISUAL: PLANO DEL PISO CON GRID DINÁMICO ---
-    # Generamos la cantidad exacta de bloques internos
+    # --- INTERFAZ VISUAL: PLANO DEL PISO CON EJES EN COLORES ---
     cuadritos_html = "".join([
         '<div style="background-color: #f59e0b; border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>' 
         for _ in range(r['cuadrado'])
     ])
+    
+    # Generamos la cadena visual de la operación para los ejes (ej: "2 x 2")
+    operacion_eje = f"{r['base']} × {r['base']}"
     
     html_constructor = f"""
     <div style="
@@ -43,36 +45,70 @@ def modulo_forja_streamlit():
         padding: 20px; 
         border-radius: 12px; 
         border: 2px solid #475569;
-        max-width: 400px;
+        max-width: 420px;
         margin: 0 auto;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
         font-family: 'Segoe UI', sans-serif;
     ">
-        <div style="color: #60a5fa; font-weight: bold; margin-bottom: 15px; font-size: 14px; text-align: center;">
-            📐 Plano de Construcción: Cuarto de {r['base']} x {r['base']}
+        <div style="color: #ffffff; font-weight: bold; margin-bottom: 20px; font-size: 14px; text-align: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
+            📐 Plano: Cuarto Cuadrado de <span style="color: #60a5fa;">{r['base']}</span> por <span style="color: #f472b6;">{r['base']}</span>
         </div>
         
-        <div style="
-            background-color: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-            display: grid;
-            grid-template-columns: repeat({r['base']}, 1fr);
-            gap: 4px;
-            max-width: 200px;
-            margin: 0 auto;
-        ">
-            {cuadritos_html}
+        <div style="position: relative; max-width: 300px; margin: 0 auto; padding-left: 40px; padding-bottom: 40px;">
+            
+            # Etiqueta del Ancho (Eje Vertical Izquierdo en Rosa)
+            <div style="
+                position: absolute; 
+                left: 0; 
+                top: 35%; 
+                transform: translateY(-50%) rotate(-90deg); 
+                transform-origin: left bottom;
+                color: #f472b6; 
+                font-weight: bold; 
+                font-size: 14px;
+                white-space: nowrap;
+            ">
+                ← Ancho: {operacion_eje} →
+            </div>
+            
+            # Plano Central de la Cuadrícula
+            <div style="
+                background-color: #0f172a;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #334155;
+                display: grid;
+                grid-template-columns: repeat({r['base']}, 1fr);
+                gap: 4px;
+                width: 100%;
+                box-sizing: border-box;
+            ">
+                {cuadritos_html}
+            </div>
+            
+            # Etiqueta del Largo (Eje Horizontal Inferior en Azul)
+            <div style="
+                position: absolute; 
+                bottom: 10px; 
+                left: 40px; 
+                right: 0;
+                text-align: center; 
+                color: #60a5fa; 
+                font-weight: bold; 
+                font-size: 14px;
+            ">
+                ← Largo: {operacion_eje} →
+            </div>
         </div>
         
-        <div style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 12px; line-height: 16px;">
-            ¡Cada cuadrito es un bloque de piedra real en el suelo de tu habitación!
+        <div style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 15px; line-height: 16px;">
+            Multiplica la línea <span style="color: #60a5fa; font-weight:bold;">Azul</span> por la línea <span style="color: #f472b6; font-weight:bold;">Rosa</span> para rellenar todo el suelo.
         </div>
     </div>
     """
-    # Altura de 300px es perfecta para que respire la caja sin empujar las preguntas
-    st.components.v1.html(html_constructor, height=300)
+    
+    # Renderizado corregido sin el parámetro html_content
+    st.components.v1.html(html_constructor, height=340)
     
     # --- SECCIÓN DE PREGUNTAS ---
     st.subheader("⚔️ Misión 1: Forjar la Potencia")
