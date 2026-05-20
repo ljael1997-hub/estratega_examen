@@ -30,55 +30,70 @@ def modulo_forja_streamlit():
     
     st.divider()
     
-    # --- INTERFAZ VISUAL: PLANO DEL PISO CON EJES EN COLORES ---
-    cuadritos_html = "".join([
-        '<div style="background-color: #f59e0b; border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>' 
-        for _ in range(r['cuadrado'])
-    ])
+    # --- INTERFAZ VISUAL: PLANO DEL PISO CON BORDES COLOREADOS ---
+    # Generamos los cuadritos coloreando la base (azul) y la altura izquierda (rosa)
+    cuadritos_html = ""
+    base_dinamica = r['base']
     
-    # Generamos la cadena visual de la operación para los ejes (ej: "2 x 2")
-    operacion_eje = f"{r['base']} × {r['base']}"
-    
+    for fila in range(base_dinamica):
+        for col in range(base_dinamica):
+            # Si es el cuadrito de la esquina inferior izquierda (intersección)
+            if fila == base_dinamica - 1 and col == 0:
+                color = "#3b82f6"  # Azul (predomina la base o mezcla)
+            # Si es de la última fila (la base del dibujo)
+            elif fila == base_dinamica - 1:
+                color = "#3b82f6"  # Azul para el Largo
+            # Si es de la primera columna (el lado izquierdo)
+            elif col == 0:
+                color = "#f472b6"  # Rosa para el Ancho
+            # Bloques internos de relleno
+            else:
+                color = "#f59e0b"  # Ámbar original
+                
+            cuadritos_html += f'<div style="background-color: {color}; border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
+
+    # Texto exacto de la operación (ej: "2 × 2")
+    operacion_eje = f"{base_dinamica} × {base_dinamica}"
+
     html_constructor = f"""
     <div style="
         background-color: #1e293b; 
-        padding: 20px; 
+        padding: 15px; 
         border-radius: 12px; 
         border: 2px solid #475569;
-        max-width: 420px;
+        max-width: 360px;
         margin: 0 auto;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
         font-family: 'Segoe UI', sans-serif;
+        box-sizing: border-box;
     ">
-        <div style="color: #ffffff; font-weight: bold; margin-bottom: 20px; font-size: 14px; text-align: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
-            📐 Plano: Cuarto Cuadrado de <span style="color: #60a5fa;">{r['base']}</span> por <span style="color: #f472b6;">{r['base']}</span>
+        <div style="color: #ffffff; font-weight: bold; margin-bottom: 15px; font-size: 13px; text-align: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
+            📐 Plano: Cuarto Cuadrado de <span style="color: #60a5fa;">{base_dinamica}</span> por <span style="color: #f472b6;">{base_dinamica}</span>
         </div>
         
-        <div style="position: relative; max-width: 300px; margin: 0 auto; padding-left: 40px; padding-bottom: 40px;">
+        <div style="position: relative; width: 100%; padding-left: 30px; padding-bottom: 30px; box-sizing: border-box;">
             
-            # Etiqueta del Ancho (Eje Vertical Izquierdo en Rosa)
             <div style="
                 position: absolute; 
-                left: 0; 
-                top: 35%; 
+                left: -5px; 
+                top: 40%; 
                 transform: translateY(-50%) rotate(-90deg); 
-                transform-origin: left bottom;
+                transform-origin: center center;
                 color: #f472b6; 
                 font-weight: bold; 
-                font-size: 14px;
+                font-size: 13px;
                 white-space: nowrap;
             ">
                 ← Ancho: {operacion_eje} →
             </div>
             
-            # Plano Central de la Cuadrícula
             <div style="
                 background-color: #0f172a;
-                padding: 12px;
+                padding: 10px;
                 border-radius: 8px;
                 border: 1px solid #334155;
                 display: grid;
-                grid-template-columns: repeat({r['base']}, 1fr);
+                grid-template-columns: repeat({base_dinamica}, 1fr);
                 gap: 4px;
                 width: 100%;
                 box-sizing: border-box;
@@ -86,29 +101,27 @@ def modulo_forja_streamlit():
                 {cuadritos_html}
             </div>
             
-            # Etiqueta del Largo (Eje Horizontal Inferior en Azul)
             <div style="
                 position: absolute; 
-                bottom: 10px; 
-                left: 40px; 
+                bottom: 5px; 
+                left: 30px; 
                 right: 0;
                 text-align: center; 
                 color: #60a5fa; 
                 font-weight: bold; 
-                font-size: 14px;
+                font-size: 13px;
             ">
                 ← Largo: {operacion_eje} →
             </div>
         </div>
         
-        <div style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 15px; line-height: 16px;">
-            Multiplica la línea <span style="color: #60a5fa; font-weight:bold;">Azul</span> por la línea <span style="color: #f472b6; font-weight:bold;">Rosa</span> para rellenar todo el suelo.
+        <div style="color: #94a3b8; font-size: 11px; text-align: center; margin-top: 10px; line-height: 15px;">
+            Multiplica los bloques <span style="color: #60a5fa; font-weight:bold;">Azules</span> de la base por los <span style="color: #f472b6; font-weight:bold;">Rosas</span> del lado para saber el total.
         </div>
     </div>
     """
     
-    # Renderizado corregido sin el parámetro html_content
-    st.components.v1.html(html_constructor, height=340)
+    st.components.v1.html(html_constructor, height=360)
     
     # --- SECCIÓN DE PREGUNTAS ---
     st.subheader("⚔️ Misión 1: Forjar la Potencia")
