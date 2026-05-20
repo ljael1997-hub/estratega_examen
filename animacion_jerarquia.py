@@ -15,7 +15,7 @@ def modulo_jerarquia_streamlit():
       3. **`{}` Llaves** (Fortaleza exterior)
     """)
     
-    # --- EJEMPLO ESTÁTICO DE GUÍA (NUEVA ADICIÓN) ---
+    # --- EJEMPLO ESTÁTICO DE GUÍA ---
     with st.expander("📖 Ver un ejemplo de entrenamiento (Cómo ganar)"):
         st.markdown("""
         **Operación de Ejemplo:** `5 + [ 2 × (10 - 7) ]`
@@ -55,11 +55,11 @@ def modulo_jerarquia_streamlit():
     
     st.divider()
     
-    # --- INTERFAZ VISUAL: EL ESCÁNER AGRANDADO ---
+    # --- INTERFAZ VISUAL: EL ESCÁNER CON ALTURA EXTRA EN STREAMLIT ---
     html_fortaleza = f"""
     <div style="
         background-color: #1e293b; 
-        padding: 25px; 
+        padding: 22px; 
         border-radius: 12px; 
         border: 2px solid #ec4899;
         max-width: 460px;
@@ -69,17 +69,17 @@ def modulo_jerarquia_streamlit():
         text-align: center;
         box-sizing: border-box;
     ">
-        <div style="color: #f472b6; font-weight: bold; font-size: 14px; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+        <div style="color: #f472b6; font-weight: bold; font-size: 14px; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 1px;">
             📡 Escáner de Asedio Activo (Plano Ampliado)
         </div>
         
-        <div style="border: 2px dashed #94a3b8; padding: 20px; border-radius: 10px; background-color: #0f172a; box-sizing: border-box;">
+        <div style="border: 2px dashed #94a3b8; padding: 18px; border-radius: 10px; background-color: #0f172a; box-sizing: border-box;">
             <span style="color: #94a3b8; font-size: 22px; font-weight: bold; vertical-align: middle;">{r['a']} + [</span>
             
-            <div style="display: inline-block; border: 2px solid #3b82f6; padding: 12px 16px; border-radius: 8px; margin: 4px 8px; background-color: rgba(59, 130, 246, 0.1); vertical-align: middle; box-sizing: border-box;">
+            <div style="display: inline-block; border: 2px solid #3b82f6; padding: 10px 14px; border-radius: 8px; margin: 4px 6px; background-color: rgba(59, 130, 246, 0.1); vertical-align: middle; box-sizing: border-box;">
                 <span style="color: #60a5fa; font-weight: bold; font-size: 22px; vertical-align: middle;">{r['b']} × </span>
                 
-                <div style="display: inline-block; border: 2px solid #ec4899; padding: 8px 14px; border-radius: 6px; background-color: rgba(236, 72, 153, 0.2); color: #f472b6; font-weight: bold; font-size: 22px; box-shadow: 0 0 12px rgba(236, 72, 153, 0.5); vertical-align: middle; box-sizing: border-box;">
+                <div style="display: inline-block; border: 2px solid #ec4899; padding: 8px 12px; border-radius: 6px; background-color: rgba(236, 72, 153, 0.2); color: #f472b6; font-weight: bold; font-size: 22px; box-shadow: 0 0 12px rgba(236, 72, 153, 0.5); vertical-align: middle; box-sizing: border-box;">
                     ({r['c']} - {r['d']})
                 </div>
                 
@@ -92,14 +92,18 @@ def modulo_jerarquia_streamlit():
         </div>
     </div>
     """
-    st.components.v1.html(html_fortaleza, height=210)
+    # Cambiamos height de 170 a 240 para que quepa la leyenda explicativa perfectamente
+    st.components.v1.html(html_fortaleza, height=240)
     
-    # --- LLAMADO A LA ACCIÓN CRÍTICO (NUEVA ADICIÓN EN ROJO) ---
+    # --- LLAMADO A LA ACCIÓN CON LA OPERACIÓN DE EXAMEN FORMAL ---
     st.markdown("""
-        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 20px 0 10px 0;">
+        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
             <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
         </div>
     """, unsafe_allow_html=True)
+    
+    # Vista formal tal como vendrá en su examen de admisión
+    st.code(f"Misión Real: {r['txt']}", language="text")
     
     # --- PANEL DE ACCIONES ---
     st.subheader("⚔️ Fase 1: Infiltración al Núcleo")
