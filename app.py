@@ -11,6 +11,14 @@ from animacion_forja import modulo_forja_streamlit
 # --- CONFIGURACIÓN INICIAL ---
 st.set_page_config(page_title="La Estratega de Exámenes", layout="centered")
 
+# --- BANNER ROJO GLOBAL REUTILIZABLE ---
+def banner_resuelve_lo_siguiente():
+    st.markdown("""
+        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
+            <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
+        </div>
+    """, unsafe_allow_html=True)
+
 # --- CONFIGURACIÓN DE ACCESIBILIDAD (DALTONISMO GLOBAL) ---
 st.sidebar.title("🛠️ Configuración")
 modo_daltonico = st.sidebar.toggle("👁️ Modo Daltonismo (Accesible)", value=False)
@@ -75,6 +83,12 @@ def modulo_sacos():
     puntos_visuales = [f"<span style='color:{COLOR_POSITIVO if n >= 0 else COLOR_NEGATIVO}; font-weight:bold; font-size:28px;'>{n:+}</span>" for n in soldados]
     st.markdown(f"### 🎯 Tu Misión: {' '.join(puntos_visuales)} = ?", unsafe_allow_html=True)
     st.divider()
+
+    # --- UNIFICACIÓN DE ACCIÓN ---
+    banner_resuelve_lo_siguiente()
+    operacion_plana = " ".join([f"{n:+} " for n in soldados]).strip()
+    st.code(f"Operación Real de Examen: {operacion_plana}", language="text")
+    st.write("")
 
     st.write("👇 **Paso 1: Separa tu dinero de tus deudas.**")
     col1, col2 = st.columns(2)
@@ -143,6 +157,11 @@ def modulo_ecuaciones():
     p = st.session_state.pregunta
     st.code(f"Candado: ({p['a']})x + ({p['b']})y = {p['c']}")
 
+    # --- UNIFICACIÓN DE ACCIÓN ---
+    banner_resuelve_lo_siguiente()
+    st.code(f"Sistema de Examen: ({p['a']})x + ({p['b']})y = {p['c']}", language="text")
+    st.write("")
+
     opciones_texto = [f"Llave {i+1}: x = {o[0]}, y = {o[1]}" for i, o in enumerate(p['opciones'])]
     eleccion = st.radio("¿Qué llave quieres probar?", opciones_texto, index=None, key=f"radio_{p['c']}_{p['a']}")
 
@@ -191,6 +210,11 @@ def modulo_estadistica():
 
     st.success(f"🍿 **Tus números en la fila:** `{datos}`")
     st.divider()
+
+    # --- UNIFICACIÓN DE ACCIÓN ---
+    banner_resuelve_lo_siguiente()
+    st.code(f"Conjunto de Datos de Examen: {datos}", language="text")
+    st.write("")
 
     # MODA
     st.subheader("1. La Moda 🎀 (El más popular)")
@@ -280,7 +304,7 @@ def modulo_regla_de_tres():
 
     if p['tipo'] == "directa":
         html_mapa = f"""
-        <div style="background-color: #1e293b; padding: 20px 25px 25px 25px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
+        <div style="background-color: #1e293b; padding: 20px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
             <div style="background-color: rgba(96, 165, 250, 0.15); color: #60a5fa; border: 1px solid #60a5fa; padding: 4px; border-radius: 6px; font-size: 14px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
                 🎯 Regla de Tres Directa
             </div>
@@ -308,7 +332,7 @@ def modulo_regla_de_tres():
         """
     else:
         html_mapa = f"""
-        <div style="background-color: #1e293b; padding: 20px 25px 25px 25px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
+        <div style="background-color: #1e293b; padding: 20px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569; box-shadow: 0px 4px 12px rgba(0,0,0,0.2);">
             <div style="background-color: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid #f59e0b; padding: 4px; border-radius: 6px; font-size: 14px; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
                 🔄 Regla de Tres Inversa
             </div>
@@ -336,6 +360,11 @@ def modulo_regla_de_tres():
         """
 
     components.html(html_mapa, height=240)
+    st.write("")
+
+    # --- UNIFICACIÓN DE ACCIÓN ---
+    banner_resuelve_lo_siguiente()
+    st.code(f"Proporción de Examen: {a1} -> {b1} | {a2} -> ❓", language="text")
     st.write("")
 
     user_resp = st.number_input("¿Cuál es el valor final de la incógnita (❓)?", step=1, value=None, key="prop_input")
@@ -410,6 +439,12 @@ def modulo_geometria_castillo():
         </div>
         """
         components.html(html_castillo, height=240)
+        st.write("")
+
+        # --- UNIFICACIÓN DE ACCIÓN ---
+        banner_resuelve_lo_siguiente()
+        st.code(f"Problema de Examen: Perímetro de Polígono Irregular (6 lados)", language="text")
+        st.write("")
         
         user_resp = st.number_input("¿Cuántos metros mide la muralla completa en total?", step=1, value=None, key="geo_input_p")
         if st.button("🏰 Reportar al Capitán"):
@@ -524,6 +559,14 @@ def modulo_geometria_castillo():
         components.html(html_patio, height=190)
         st.write("")
 
+        # --- UNIFICACIÓN DE ACCIÓN ---
+        banner_resuelve_lo_siguiente()
+        if a['tipo'] == "rectángulo": st.code(f"Fórmula de Examen: Área = {b}m × {h}m", language="text")
+        elif a['tipo'] == "triángulo": st.code(f"Fórmula de Examen: Área = ({b}m × {h}m) ÷ 2", language="text")
+        elif a['tipo'] == "círculo": st.code(f"Fórmula de Examen: Área = 3.14 × ({r}m × {r}m)", language="text")
+        else: st.code(f"Fórmula de Examen: Área = ({a['datos'][2]}m × {ap}m) ÷ 2", language="text")
+        st.write("")
+
         user_resp = st.number_input("¿Cuántas losetas cuadradas de área se necesitan? (Usa números enteros)", step=1, value=None, key="geo_input_a")
         if st.button("🧱 Entregar Patio"):
             if user_resp == a['total']:
@@ -577,6 +620,11 @@ def modulo_geometria_castillo():
         """
         components.html(html_torre, height=360)
 
+        # --- UNIFICACIÓN DE ACCIÓN ---
+        banner_resuelve_lo_siguiente()
+        st.code(f"Ecuación Teórica de Examen: c² = {p['b']}² + {p['h']}²", language="text")
+        st.write("")
+
         user_resp = st.number_input("¿Cuánto debe medir la longitud de la escalera (❓)?", step=1, value=None, key="geo_input_pit")
         if st.button("🪜 Desplegar Escalera"):
             if user_resp == p['c']:
@@ -617,7 +665,7 @@ with st.sidebar:
         * **(5)(4)** o **5 * 4** -> Significa sumar el 5 cuatro veces ($5 + 5 + 5 + 5 = 20$).
         
         **➗ Dividir:**
-        * **20 / 4** o **20 ÷ 4** -> Repartir 20 cosas entre 4 personas en partes iguales.
+        * **20 / 4** o **20 ÷ 4** -> Repartir 20 cosas entre 4 personas in partes iguales.
         
         **⏹️ Elevar al Cuadrado (²):**
         * **$5^2$** -> Es multiplicar el número **por sí mismo** ($5 \\times 5 = 25$). 
