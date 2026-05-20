@@ -3,145 +3,105 @@ import random
 import math
 
 def modulo_forja_streamlit():
-    st.title("⚒️ La Forja de Números (El Constructor de Pisos)")
+    st.title("⚒️ La Forja de Números (Leyes de Construcción)")
     
     st.markdown("""
-    ### 🧱 El Secreto del Área Cuadrada
-    En los exámenes, elevar al cuadrado y sacar la raíz es como construir o medir los pisos de una fortaleza.
-    
-    * ⏹️ **Elevar al Cuadrado (²):** Es **construir** un piso. Si tu base es **4**, haces un piso de $4 \\times 4$ bloques. ¡Usarás **16 bloques** en total!
-    * 🌱 **Raíz Cuadrada (√):** Es **medir** el piso. Te damos un cuarto ya hecho con **16 bloques** en total. Tu misión es descubrir **cuánto mide una sola de sus paredes** (Resultado = **4**).
+    ### 🧱 Los Dos Lados del Espejo
+    Para dominar los exámenes necesitas dos habilidades: **Construir** pisos usando potencias y **Desmantelar** cuartos usando raíces cuadradas.
     """)
     
     if 'game_id_forja' not in st.session_state: 
         st.session_state.game_id_forja = 0
         
     if 'reto_forja' not in st.session_state:
-        # Tamaños de lado perfectos y amigables para la cuadrícula (de 2 a 6)
-        lado = random.choice([2, 3, 4, 5, 6])
-        bloques_totales = lado ** 2
+        # Generamos dos números diferentes para que los juegos no se copien las respuestas
+        lado_pot = random.choice([2, 3, 4, 5, 6])
+        lado_raiz = random.choice([2, 3, 4, 5, 6])
+        while lado_raiz == lado_pot:  # Asegura que sean distintos
+            lado_raiz = random.choice([2, 3, 4, 5, 6])
+            
         st.session_state.reto_forja = {
-            "base": lado,
-            "cuadrado": bloques_totales
+            "b_pot": lado_pot,
+            "c_pot": lado_pot ** 2,
+            "b_raiz": lado_raiz,
+            "c_raiz": lado_raiz ** 2
         }
         
     r = st.session_state.reto_forja
     gid = st.session_state.game_id_forja
     
-    st.divider()
+    # =========================================================================
+    # ⚔️ ZONA 1: LA FORJA DE POTENCIAS (CONSTRUIR)
+    # =========================================================================
+    st.header("⏬ 1. La Forja de Potencias (Multiplicar)")
+    st.write(f"Diseña un cuarto cuadrado que mida **{r['b_pot']}** bloques de largo por **{r['b_pot']}** de ancho. ¿Cuántos bloques usarás en total para rellenar el piso (**{r['b_pot']}²**)?")
     
-    # --- INTERFAZ VISUAL: CUADRÍCULA COMPACTA PARA EVITAR DESBORDES ---
-    cuadritos_html = ""
-    base_dinamica = r['base']
-    
-    for fila in range(base_dinamica):
-        for col in range(base_dinamica):
-            # Esquina inferior izquierda (Intersección)
-            if fila == base_dinamica - 1 and col == 0:
-                estilo_color = "background: linear-gradient(135deg, #f472b6, #3b82f6);"
-            # Última fila completa: La Base del Largo (Azul)
-            elif fila == base_dinamica - 1:
-                estilo_color = "background-color: #3b82f6;"
-            # Primera columna completa: La Pared del Ancho (Rosa)
-            elif col == 0:
-                estilo_color = "background-color: #f472b6;"
-            # Relleno del cuarto (Ámbar)
-            else:
-                estilo_color = "background-color: #f59e0b;"
-                
-            cuadritos_html += f'<div style="{estilo_color} border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
+    # Generación del HTML para el Plano de Potencia
+    cuadritos_pot = ""
+    for fila in range(r['b_pot']):
+        for col in range(r['b_pot']):
+            if fila == r['b_pot'] - 1 and col == 0: color = "background: linear-gradient(135deg, #f472b6, #3b82f6);"
+            elif fila == r['b_pot'] - 1: color = "background-color: #3b82f6;"  # Base Azul
+            elif col == 0: color = "background-color: #f472b6;"  # Altura Rosa
+            else: color = "background-color: #f59e0b;"  # Relleno Ámbar
+            cuadritos_pot += f'<div style="{color} border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
 
-    operacion_eje = f"{base_dinamica} × {base_dinamica}"
-
-    html_constructor = f"""
-    <div style="
-        background-color: #1e293b; 
-        padding: 15px; 
-        border-radius: 12px; 
-        border: 2px solid #475569;
-        max-width: 360px;
-        margin: 0 auto;
-        box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
-        font-family: 'Segoe UI', sans-serif;
-        box-sizing: border-box;
-    ">
-        <div style="color: #ffffff; font-weight: bold; margin-bottom: 15px; font-size: 13px; text-align: center; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px;">
-            📐 Plano: Cuarto Cuadrado de <span style="color: #60a5fa;">{base_dinamica}</span> por <span style="color: #f472b6;">{base_dinamica}</span>
-        </div>
-        
-        <table style="margin: 0 auto; border-collapse: collapse; box-sizing: border-box;">
-            <tr>
-                <td style="vertical-align: middle; padding-right: 12px; text-align: center;">
-                    <div style="
-                        color: #f472b6; 
-                        font-weight: bold; 
-                        font-size: 13px;
-                        writing-mode: vertical-lr;
-                        white-space: nowrap;
-                        display: inline-block;
-                        letter-spacing: 1px;
-                    ">
-                        ← Ancho: {operacion_eje} →
-                    </div>
-                </td>
-                
-                <td style="vertical-align: bottom; width: 220px; max-width: 220px;">
-                    <div style="
-                        background-color: #0f172a;
-                        padding: 8px;
-                        border-radius: 8px;
-                        border: 1px solid #334155;
-                        display: grid;
-                        grid-template-columns: repeat({base_dinamica}, 1fr);
-                        gap: 4px;
-                        width: 100%;
-                        box-sizing: border-box;
-                    ">
-                        {cuadritos_html}
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td style="padding-top: 10px; text-align: center;">
-                    <div style="color: #60a5fa; font-weight: bold; font-size: 13px; white-space: nowrap;">
-                        ← Largo: {operacion_eje} →
-                    </div>
-                </td>
-            </tr>
-        </table>
-        
-        <div style="color: #94a3b8; font-size: 11px; text-align: center; margin-top: 15px; line-height: 15px;">
-            Multiplica la base <span style="color: #60a5fa; font-weight:bold;">Azul</span> por la altura <span style="color: #f472b6; font-weight:bold;">Rosa</span>. La esquina <span style="background: linear-gradient(135deg, #f472b6, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:bold;">Fusión</span> une ambos caminos.
+    html_potencia = f"""
+    <div style="background-color: #1e293b; padding: 12px; border-radius: 12px; border: 2px solid #3b82f6; max-width: 340px; margin: 0 auto; font-family: sans-serif;">
+        <div style="color: #60a5fa; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 10px;">🔨 CONSTRUYENDO: Plano de {r['b_pot']} × {r['b_pot']}</div>
+        <div style="display: grid; grid-template-columns: repeat({r['b_pot']}, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 6px; max-width: 180px; margin: 0 auto;">
+            {cuadritos_pot}
         </div>
     </div>
     """
+    st.components.v1.html(html_potencia, height=250)
     
-    # Aumentamos ligeramente la altura total asignada al iframe para que sobre espacio abajo
-    st.components.v1.html(html_constructor, height=400)
-    
-    # --- SECCIÓN DE PREGUNTAS ---
-    st.subheader("⚔️ Misión 1: Forjar la Potencia")
-    st.write(f"Si diseñas una habitación cuadrada que mida **{r['base']}** bloques de largo... ¿Cuántos bloques usarás en total para llenar todo el piso (**{r['base']}²**)?")
-    st.caption(f"💡 Pista del maestro de obra: Multiplica lado por lado (`{r['base']} × {r['base']}`).")
-    user_pot = st.number_input("Total de bloques del piso:", step=1, key=f"forja_p_{gid}", value=None, placeholder="Cuenta los bloques o multiplica")
+    user_pot = st.number_input("Total de bloques para construir el piso:", step=1, key=f"f_p_{gid}", value=None)
     
     st.divider()
     
-    st.subheader("🔍 Misión 2: El Inspector de Paredes")
-    st.write(f"Ahora mira el plano de arriba con sus **{r['cuadrado']}** bloques totales. Si aplicas una raíz cuadrada (**√{r['cuadrado']}**), queremos saber cuánto mide una sola pared.")
-    st.info(f"🤔 *Pregunta Clave:* ¿Qué número multiplicado **por sí mismo** da como resultado {r['cuadrado']}?")
-    user_raiz = st.number_input("Longitud de una pared:", step=1, key=f"forja_r_{gid}", value=None, placeholder="Busca: ? × ? = " + str(r['cuadrado']))
+    # =========================================================================
+    # 🔍 ZONA 2: LA CUEVA DE LAS RAÍCES (DESMANTELAR)
+    # =========================================================================
+    st.header("⏫ 2. La Cueva de las Raíces (Desarmar)")
+    st.write(f"Entraste a una habitación oculta que ya está pavimentada con **{r['c_raiz']}** bloques en total. Para abrir la salida, necesitas calcular cuánto mide una sola de sus paredes (**√{r['c_raiz']}**).")
     
+    # Generación del HTML para el Plano de Raíz (Efecto misterioso/cerrado todo en morado/ámbar)
+    cuadritos_raiz = ""
+    for fila in range(r['b_raiz']):
+        for col in range(r['b_raiz']):
+            # Dibujamos las paredes exteriores que debe adivinar en un tono lila/roto, y el centro misterioso
+            if fila == r['b_raiz'] - 1 or col == 0:
+                color = "background-color: #a855f7;"  # Muros a descubrir (Morado)
+            else:
+                color = "background-color: #475569;"  # Bloques encerrados
+            cuadritos_raiz += f'<div style="{color} border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
+
+    html_raiz = f"""
+    <div style="background-color: #1e293b; padding: 12px; border-radius: 12px; border: 2px solid #a855f7; max-width: 340px; margin: 0 auto; font-family: sans-serif;">
+        <div style="color: #c084fc; font-weight: bold; font-size: 12px; text-align: center; margin-bottom: 10px;">🔍 CUARTO CERRADO: {r['c_raiz']} bloques adentro</div>
+        <div style="display: grid; grid-template-columns: repeat({r['b_raiz']}, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 6px; max-width: 180px; margin: 0 auto;">
+            {cuadritos_raiz}
+        </div>
+    </div>
+    """
+    st.components.v1.html(html_raiz, height=250)
+    st.info(f"🤔 *Pregunta de la Cueva:* ¿Qué longitud de pared multiplicada **por sí misma** genera los {r['c_raiz']} bloques?")
+    
+    user_raiz = st.number_input("Medida secreta de la pared:", step=1, key=f"f_r_{gid}", value=None)
+    
+    # =========================================================================
+    # 🏟️ EVALUACIÓN DEL MÓDULO
+    # =========================================================================
     st.write("")
-    if st.button("⚒️ Registrar Obra en la Forja"):
-        if user_pot == r['cuadrado'] and user_raiz == r['base']:
+    if st.button("⚒️ Sellar Registros en la Forja"):
+        if user_pot == r['c_pot'] and user_raiz == r['b_raiz']:
             st.balloons()
-            st.success(f"¡LOGRADO MAESTRO! El plano cuadra a la perfección: {r['base']}² es {r['cuadrado']} y la longitud de la pared (√{r['cuadrado']}) es {r['base']}.")
+            st.success(f"¡PERFECTO MAESTRO! Sabes construir con potencias ({r['b_pot']}² = {r['c_pot']}) y sabes abrir cerraduras con raíces (√{r['c_raiz']} = {r['b_raiz']}).")
         else:
-            st.error("Los planos no pasaron la inspección. Recuerda: el total de bloques debe ser igual a multiplicar la pared por sí misma.")
+            st.error("Uno de los dos planos no está bien calculado. Revisa tus multiplicaciones mentales.")
             
-    if st.button("🔄 Generar Nuevo Plano"):
+    if st.button("🔄 Generar Nuevos Planos"):
         st.session_state.game_id_forja += 1
         del st.session_state.reto_forja
         st.rerun()
