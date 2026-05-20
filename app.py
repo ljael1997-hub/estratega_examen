@@ -5,6 +5,7 @@ import statistics
 from animacion_sustitucion import animacion_sustitucion
 from animacion_porcentaje import modulo_porcentajes_streamlit
 from animacion_porcentajes_combinados import modulo_combinados_streamlit
+from animacion_jerarquia_basica import modulo_jerarquia_basica_streamlit
 
 # --- CONFIGURACIÓN INICIAL ---
 st.set_page_config(page_title="La Estratega de Exámenes", layout="centered")
@@ -597,7 +598,7 @@ def modulo_geometria_castillo():
             st.rerun()
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
-lista_temas = ["Duelo de Sacos", "Sistemas 2x2", "Estadística", "Magia del Punto", "Porcentajes Combinados", "Regla de Tres", "Las Crónicas del Castillo"]
+lista_temas = ["Duelo de Sacos", "Leyes del Trono (Jerarquía Básica)", "Sistemas 2x2", "Estadística", "Magia del Punto", "Porcentajes Combinados", "Regla de Tres", "Las Crónicas del Castillo"]
 
 # CORRECCIÓN CENTRAL: Reincorporación del componente nativo de control de menú de barra lateral
 with st.sidebar:
@@ -640,6 +641,8 @@ st.divider()
 
 if seleccion_final == "Duelo de Sacos": 
     modulo_sacos()
+elif seleccion_final == "Leyes del Trono (Jerarquía Básica)":
+    modulo_jerarquia_basica_streamlit()
 elif seleccion_final == "Sistemas 2x2": 
     modulo_ecuaciones()
 elif seleccion_final == "Estadística": 
