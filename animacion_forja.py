@@ -3,25 +3,26 @@ import random
 import math
 
 def modulo_forja_streamlit():
-    st.title("⚒️ La Forja de Números (Torres de Poder)")
+    st.title("⚒️ La Forja de Números (El Constructor de Pisos)")
     
     st.markdown("""
-    ### 🏰 El Hechizo de las Torres
-    En los exámenes de admisión, las potencias y las raíces son como conjuros de crecimiento y encogimiento para las torres del reino.
+    ### 🧱 El Secreto del Área Cuadrada
+    En los exámenes, elevar al cuadrado y sacar la raíz es como construir o medir los pisos de una fortaleza.
     
-    * ⏫ **Elevar al Cuadrado (²):** Es el hechizo de **Crecimiento**. Si tu torre mide **3 pisos**, el hechizo la hace crecer multiplicando su altura original por sí misma ($3 \\times 3$). ¡Se transforma en una torre de **9 pisos**!
-    * ⏬ **Raíz Cuadrada (√):** Es el hechizo de **Encogimiento**. Si te dan una mega torre de **9 pisos**, la raíz cuadrada descubre de qué tamaño era originalmente antes del hechizo. ¡Regresa a ser de **3 pisos**!
+    * ⏹️ **Elevar al Cuadrado (²):** Es **construir** un piso. Si tu base es **4**, haces un piso de $4 \\times 4$ bloques. ¡Usarás **16 bloques** en total!
+    * 🌱 **Raíz Cuadrada (√):** Es **medir** el piso. Te damos un cuarto ya hecho con **16 bloques** en total. Tu misión es descubrir **cuánto mide una sola de sus paredes** (Resultado = **4**).
     """)
     
     if 'game_id_forja' not in st.session_state: 
         st.session_state.game_id_forja = 0
         
     if 'reto_forja' not in st.session_state:
-        altura_original = random.choice([2, 3, 4, 5, 6])
-        mega_altura = altura_original ** 2
+        # Tamaños de lado perfectos y amigables para la cuadrícula (de 2 a 6)
+        lado = random.choice([2, 3, 4, 5, 6])
+        bloques_totales = lado ** 2
         st.session_state.reto_forja = {
-            "base": altura_original,
-            "cuadrado": mega_altura
+            "base": lado,
+            "cuadrado": bloques_totales
         }
         
     r = st.session_state.reto_forja
@@ -29,94 +30,72 @@ def modulo_forja_streamlit():
     
     st.divider()
     
-    # --- INTERFAZ VISUAL CORREGIDA (FLEXBOX RESPONSIVO) ---
-    pisos_base_html = "".join([
-        f'<div style="background-color: #3b82f6; border: 1px solid #111827; height: 18px; width: 85%; margin: 2px auto; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; text-align: center; line-height: 18px; flex-shrink: 0;">Piso {i+1}</div>' 
-        for i in range(r['base'])
+    # --- INTERFAZ VISUAL: PLANO DEL PISO CON GRID DINÁMICO ---
+    # Generamos la cantidad exacta de bloques internos
+    cuadritos_html = "".join([
+        '<div style="background-color: #f59e0b; border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>' 
+        for _ in range(r['cuadrado'])
     ])
     
-    pisos_mega_html = "".join([
-        f'<div style="background-color: #f59e0b; border: 1px solid #111827; height: 18px; width: 85%; margin: 2px auto; border-radius: 4px; color: #111827; font-size: 11px; font-weight: bold; text-align: center; line-height: 18px; flex-shrink: 0;">Piso {i+1}</div>' 
-        for i in range(r['cuadrado'])
-    ])
-    
-    html_torres = f"""
+    html_constructor = f"""
     <div style="
         background-color: #1e293b; 
-        padding: 15px; 
+        padding: 20px; 
         border-radius: 12px; 
-        font-family: 'Segoe UI', sans-serif; 
         border: 2px solid #475569;
-        display: flex;
-        justify-content: space-around;
-        gap: 15px;
-        max-width: 500px;
+        max-width: 400px;
         margin: 0 auto;
         box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+        font-family: 'Segoe UI', sans-serif;
     ">
-        <div style="width: 45%; display: flex; flex-direction: column; align-items: center;">
-            <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-align: center;">
-                🏰 Torre Base ({r['base']} pisos)
-            </div>
-            <div style="
-                background-color: #0f172a; 
-                border-radius: 8px; 
-                padding: 10px 5px; 
-                width: 100%; 
-                height: 220px; 
-                display: flex; 
-                flex-direction: column-reverse; 
-                overflow-y: auto;
-                border: 1px solid #334155;
-            ">
-                {pisos_base_html}
-            </div>
+        <div style="color: #60a5fa; font-weight: bold; margin-bottom: 15px; font-size: 14px; text-align: center;">
+            📐 Plano de Construcción: Cuarto de {r['base']} x {r['base']}
         </div>
-
-        <div style="width: 45%; display: flex; flex-direction: column; align-items: center;">
-            <div style="color: #fbbf24; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-align: center;">
-                ⚡ Mega Torre ({r['cuadrado']} pisos)
-            </div>
-            <div style="
-                background-color: #0f172a; 
-                border-radius: 8px; 
-                padding: 10px 5px; 
-                width: 100%; 
-                height: 220px; 
-                display: flex; 
-                flex-direction: column-reverse; 
-                overflow-y: auto;
-                border: 1px solid #334155;
-            ">
-                {pisos_mega_html}
-            </div>
+        
+        <div style="
+            background-color: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            display: grid;
+            grid-template-columns: repeat({r['base']}, 1fr);
+            gap: 4px;
+            max-width: 200px;
+            margin: 0 auto;
+        ">
+            {cuadritos_html}
+        </div>
+        
+        <div style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 12px; line-height: 16px;">
+            ¡Cada cuadrito es un bloque de piedra real en el suelo de tu habitación!
         </div>
     </div>
     """
-    st.components.v1.html(html_torres, height=290)
+    # Altura de 300px es perfecta para que respire la caja sin empujar las preguntas
+    st.components.v1.html(html_content=html_constructor, height=300)
     
     # --- SECCIÓN DE PREGUNTAS ---
-    st.subheader("⚔️ Fase A: Desata el Crecimiento")
-    st.write(f"Si aplicamos el hechizo al cuadrado a la **Torre Base de {r['base']} pisos**... ¿En cuántos pisos se convertirá?")
-    st.caption(f"💡 Pista de la Forja: Multiplica la altura por sí misma (`{r['base']} × {r['base']}`).")
-    user_pot = st.number_input("Pisos finales de la Mega Torre:", step=1, key=f"torre_p_{gid}", value=None, placeholder="Escribe el total de pisos")
+    st.subheader("⚔️ Misión 1: Forjar la Potencia")
+    st.write(f"Si diseñas una habitación cuadrada que mida **{r['base']}** bloques de largo... ¿Cuántos bloques usarás en total para llenar todo el piso (**{r['base']}²**)?")
+    st.caption(f"💡 Pista del maestro de obra: Multiplica lado por lado (`{r['base']} × {r['base']}`).")
+    user_pot = st.number_input("Total de bloques del piso:", step=1, key=f"forja_p_{gid}", value=None, placeholder="Cuenta los bloques o multiplica")
     
     st.divider()
     
-    st.subheader("🔍 Fase B: El Conjuro de Encogimiento")
-    st.write(f"Ahora mira la **Mega Torre de {r['cuadrado']} pisos**. Si le aplicas una raíz cuadrada (**√{r['cuadrado']}**), volverá a su tamaño original.")
-    st.info(f"🤔 *Pregunta Clave:* ¿Qué número de pisos multiplicado **por sí mismo** da como resultado {r['cuadrado']}?")
-    user_raiz = st.number_input("Altura original de la torre:", step=1, key=f"torre_r_{gid}", value=None, placeholder="Busca: ? × ? = " + str(r['cuadrado']))
+    st.subheader("🔍 Misión 2: El Inspector de Paredes")
+    st.write(f"Ahora mira el plano de arriba con sus **{r['cuadrado']}** bloques totales. Si aplicas una raíz cuadrada (**√{r['cuadrado']}**), queremos saber cuánto mide una sola pared.")
+    st.info(f"🤔 *Pregunta Clave:* ¿Qué número multiplicado **por sí mismo** da como resultado {r['cuadrado']}?")
+    user_raiz = st.number_input("Longitud de una pared:", step=1, key=f"forja_r_{gid}", value=None, placeholder="Busca: ? × ? = " + str(r['cuadrado']))
     
     st.write("")
-    if st.button("⚒️ Conjurar en la Forja"):
+    if st.button("⚒️ Registrar Obra en la Forja"):
         if user_pot == r['cuadrado'] and user_raiz == r['base']:
             st.balloons()
-            st.success(f"¡LOGRADO! El {r['base']}² es {r['cuadrado']} y la raíz de {r['cuadrado']} es {r['base']}.")
+            st.success(f"¡LOGRADO MAESTRO! El plano cuadra a la perfección: {r['base']}² es {r['cuadrado']} y la longitud de la pared (√{r['cuadrado']}) es {r['base']}.")
         else:
-            st.error("Los hechizos no se equilibraron. Revisa tus cuentas.")
+            st.error("Los planos no pasaron la inspección. Recuerda: el total de bloques debe ser igual a multiplicar la pared por sí misma.")
             
-    if st.button("🔄 Forjar Nuevas Torres"):
+    if st.button("🔄 Generar Nuevo Plano"):
         st.session_state.game_id_forja += 1
         del st.session_state.reto_forja
         st.rerun()
