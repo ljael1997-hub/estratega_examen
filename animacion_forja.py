@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import math
 
 def modulo_forja_streamlit():
     st.title("⚒️ La Forja de Números (Leyes de Construcción)")
@@ -49,33 +48,70 @@ def modulo_forja_streamlit():
     operacion_eje_pot = f"{r['b_pot']} × {r['b_pot']}"
 
     html_potencia = f"""
-    <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #3b82f6; max-width: 380px; margin: 0 auto; font-family: 'Segoe UI', sans-serif; box-sizing: border-box;">
-        <div style="color: #60a5fa; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 4px;">🔨 CONSTRUYENDO: Plano Base</div>
-        <table style="width: 100%; border-collapse: collapse; box-sizing: border-box;">
-            <tr>
-                <td style="vertical-align: middle; width: 45px; min-width: 45px; text-align: center; padding-right: 5px;">
-                    <div style="color: #f472b6; font-weight: bold; font-size: 12px; writing-mode: vertical-lr; transform: rotate(180deg); white-space: nowrap;">← Ancho: {operacion_eje_pot} →</div>
-                </td>
-                <td style="vertical-align: bottom; width: 180px; max-width: 180px;">
-                    <div style="display: grid; grid-template-columns: repeat({r['b_pot']}, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
-                        {cuadritos_pot}
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td style="padding-top: 8px; text-align: center;">
-                    <div style="color: #60a5fa; font-weight: bold; font-size: 12px; white-space: nowrap;">← Largo: {operacion_eje_pot} →</div>
-                </td>
-            </tr>
-        </table>
+    <div style="
+        background-color: #1e293b; 
+        padding: 15px 15px 25px 15px; 
+        border-radius: 12px; 
+        border: 2px solid #3b82f6; 
+        max-width: 360px; 
+        margin: 0 auto; 
+        font-family: 'Segoe UI', sans-serif; 
+        box-sizing: border-box;
+    ">
+        <div style="color: #60a5fa; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 4px;">
+            🔨 CONSTRUYENDO: Plano Base
+        </div>
+        
+        <div style="display: flex; align-items: center; justify-content: center; position: relative; padding-left: 35px; padding-bottom: 35px; box-sizing: border-box;">
+            
+            <div style="
+                position: absolute;
+                left: -10px;
+                top: calc(50% - 17px);
+                transform: rotate(-90deg);
+                color: #f472b6;
+                font-weight: bold;
+                font-size: 13px;
+                white-space: nowrap;
+            ">
+                ← Ancho: {operacion_eje_pot} →
+            </div>
+            
+            <div style="
+                background: #0f172a; 
+                padding: 8px; 
+                border-radius: 6px; 
+                display: grid; 
+                grid-template-columns: repeat({r['b_pot']}, 1fr); 
+                gap: 4px; 
+                width: 100%;
+                max-width: 180px;
+                box-sizing: border-box;
+            ">
+                {cuadritos_pot}
+            </div>
+            
+            <div style="
+                position: absolute;
+                bottom: -5px;
+                left: 35px;
+                right: 0;
+                text-align: center;
+                color: #60a5fa;
+                font-weight: bold;
+                font-size: 13px;
+                white-space: nowrap;
+            ">
+                ← Largo: {operacion_eje_pot} →
+            </div>
+        </div>
     </div>
     """
-    st.components.v1.html(html_potencia, height=270)
+    st.components.v1.html(html_potencia, height=310)
     
-    # BANNER ROJO INTEGRADO NATIVO POTENCIA
+    # BANNER ROJO INTERACTIVE
     st.markdown("""
-        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 10px 0 10px 0;">
+        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
             <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
         </div>
     """, unsafe_allow_html=True)
@@ -101,33 +137,70 @@ def modulo_forja_streamlit():
             cuadritos_raiz += f'<div style="{color} border: 1px solid #1e293b; border-radius: 4px; aspect-ratio: 1/1;"></div>'
 
     html_raiz = f"""
-    <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #a855f7; max-width: 380px; margin: 0 auto; font-family: 'Segoe UI', sans-serif; box-sizing: border-box;">
-        <div style="color: #c084fc; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 4px;">🔍 CUARTO CERRADO: {r['c_raiz']} bloques totales</div>
-        <table style="width: 100%; border-collapse: collapse; box-sizing: border-box;">
-            <tr>
-                <td style="vertical-align: middle; width: 45px; min-width: 45px; text-align: center; padding-right: 5px;">
-                    <div style="color: #c084fc; font-weight: bold; font-size: 12px; writing-mode: vertical-lr; transform: rotate(180deg); white-space: nowrap;">← Pared: ❓ →</div>
-                </td>
-                <td style="vertical-align: bottom; width: 180px; max-width: 180px;">
-                    <div style="display: grid; grid-template-columns: repeat({r['b_raiz']}, 1fr); gap: 4px; background: #0f172a; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box;">
-                        {cuadritos_raiz}
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td style="padding-top: 8px; text-align: center;">
-                    <div style="color: #c084fc; font-weight: bold; font-size: 12px; white-space: nowrap;">← Base: ❓ →</div>
-                </td>
-            </tr>
-        </table>
+    <div style="
+        background-color: #1e293b; 
+        padding: 15px; 
+        border-radius: 12px; 
+        border: 2px solid #a855f7; 
+        max-width: 360px; 
+        margin: 0 auto; 
+        font-family: 'Segoe UI', sans-serif; 
+        box-sizing: border-box;
+    ">
+        <div style="color: #c084fc; font-weight: bold; font-size: 13px; text-align: center; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 4px;">
+            🔍 CUARTO CERRADO: {r['c_raiz']} bloques totales
+        </div>
+        
+        <div style="display: flex; align-items: center; justify-content: center; position: relative; padding-left: 35px; padding-bottom: 35px; box-sizing: border-box;">
+            
+            <div style="
+                position: absolute;
+                left: -10px;
+                top: calc(50% - 17px);
+                transform: rotate(-90deg);
+                color: #c084fc;
+                font-weight: bold;
+                font-size: 13px;
+                white-space: nowrap;
+            ">
+                ← Pared: ❓ →
+            </div>
+            
+            <div style="
+                display: grid; 
+                grid-template-columns: repeat({r['b_raiz']}, 1fr); 
+                gap: 4px; 
+                background: #0f172a; 
+                padding: 8px; 
+                border-radius: 6px; 
+                width: 100%;
+                max-width: 180px;
+                box-sizing: border-box;
+            ">
+                {cuadritos_raiz}
+            </div>
+            
+            <div style="
+                position: absolute;
+                bottom: -5px;
+                left: 35px;
+                right: 0;
+                text-align: center;
+                color: #c084fc;
+                font-weight: bold;
+                font-size: 13px;
+                white-space: nowrap;
+            ">
+                ← Base: ❓ →
+            </div>
+        </div>
     </div>
     """
-    st.components.v1.html(html_raiz, height=270)
+    st.components.v1.html(html_raiz, height=310)
     
-    # BANNER ROJO INTEGRADO NATIVO RAÍZ
+    # BANNER ROJO INTERACTIVE
     st.markdown("""
-        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 10px 0 10px 0;">
+        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
             <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
         </div>
     """, unsafe_allow_html=True)
@@ -144,7 +217,7 @@ def modulo_forja_streamlit():
             st.balloons()
             st.success(f"¡PERFECTO MAESTRO! Sabes construir con potencias ({r['b_pot']}² = {r['c_pot']}) y desmantelar con raíces (√{r['c_raiz']} = {r['b_raiz']}).")
         else:
-            st.error("Uno de los dos planos no está bien calculado. Revisa tus multiplicaciones mentales.")
+            st.error("Uno de los dos planos no está bien calculated. Revisa tus multiplicaciones mentales.")
             
     if st.button("🔄 Generar Nuevos Planos"):
         st.session_state.game_id_forja += 1
