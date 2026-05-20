@@ -10,34 +10,35 @@ def modulo_jerarquia_basica_streamlit():
     No todas las operaciones tienen el mismo peso. En el examen, debes resolverlas siguiendo este estricto orden de rangos:
     """)
     
-    # --- TABLA VISUAL DE JERARQUÍA ---
+    # --- TABLA VISUAL DE JERARQUÍA CORREGIDA ---
     html_piramide = """
-    <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; color: white; max-width: 450px; margin: 0 auto; border: 2px solid #f59e0b;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+    <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; color: white; max-width: 500px; margin: 0 auto; border: 2px solid #f59e0b; box-shadow: 0px 4px 10px rgba(0,0,0,0.3);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
             <tr style="background-color: rgba(245, 158, 11, 0.2); border-bottom: 2px solid #f59e0b;">
-                <th style="padding: 8px;">👑 Rango (Poder)</th>
-                <th style="padding: 8px;">⚔️ Operaciones</th>
-                <th style="padding: 8px;">🔄 Opuesto Directo</th>
+                <th style="padding: 10px;">👑 Rango (Poder)</th>
+                <th style="padding: 10px;">⚔️ Operaciones</th>
+                <th style="padding: 10px;">🔄 Opuesto Directo</th>
             </tr>
             <tr style="border-bottom: 1px solid #334155;">
-                <td style="padding: 8px; font-weight: bold; color: #f43f5e;">⚡ Nivel 3 (Máximo)</td>
-                <td style="padding: 8px;">Potencias (²)/ Raíces (√)</td>
-                <td style="padding: 8px; color: #94a3b8;">Son opuestas entre sí</td>
+                <td style="padding: 10px; font-weight: bold; color: #f43f5e;">⚡ Nivel 3 (Máximo)</td>
+                <td style="padding: 10px;">Potencias (²) / Raíces (√)</td>
+                <td style="padding: 10px; color: #94a3b8; font-size: 13px;">Son opuestas entre sí</td>
             </tr>
             <tr style="border-bottom: 1px solid #334155;">
-                <td style="padding: 8px; font-weight: bold; color: #3b82f6;">🛡️ Nivel 2 (Medio)</td>
-                <td style="padding: 8px;">Multiplicación / División</td>
-                <td style="padding: 8px; color: #94a3b8;">Son opuestas entre sí</td>
+                <td style="padding: 10px; font-weight: bold; color: #3b82f6;">🛡️ Nivel 2 (Medio)</td>
+                <td style="padding: 10px;">Multiplicación / División</td>
+                <td style="padding: 10px; color: #94a3b8; font-size: 13px;">Son opuestas entre sí</td>
             </tr>
             <tr>
-                <td style="padding: 8px; font-weight: bold; color: #10b981;">🟢 Nivel 1 (Bajo)</td>
-                <td style="padding: 8px;">Suma (+) / Resta (-)</td>
-                <td style="padding: 8px; color: #94a3b8;">Son opuestas entre sí</td>
+                <td style="padding: 10px; font-weight: bold; color: #10b981;">🟢 Nivel 1 (Bajo)</td>
+                <td style="padding: 10px;">Suma (+) / Resta (-)</td>
+                <td style="padding: 10px; color: #94a3b8; font-size: 13px;">Son opuestas entre sí</td>
             </tr>
         </table>
     </div>
     """
-    st.components.v1.html(html_piramide, height=160)
+    # Aumentamos la altura a 240 para que la tabla respire y se muestre completa
+    st.components.v1.html(html_piramide, height=240)
     
     st.markdown("""
     *⚠️ El Secreto de Empate:* Si dos operaciones del mismo nivel están juntas (por ejemplo, una multiplicación y una división), **¡resuelve siempre de izquierda a derecha!**
