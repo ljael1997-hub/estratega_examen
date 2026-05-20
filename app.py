@@ -362,6 +362,7 @@ def modulo_regla_de_tres():
 def modulo_geometria_castillo():
     st.title("🏰 Las Crónicas del Castillo (Geometría)")
     
+    # Menú para que el alumno elija qué juego jugar dentro del castillo
     mision = st.selectbox(
         "🗺️ Elige qué zona del Castillo quieres explorar:",
         ["Misión 1: La Muralla (Perímetros)", "Misión 2: El Patio de Armas (Áreas)", "Misión 3: La Escalera de la Torre (Pitágoras)"]
@@ -422,7 +423,8 @@ def modulo_geometria_castillo():
             if user_resp == g['total']:
                 st.success(f"¡Excelente! Perímetro asegurado. Registraste los {g['total']}m con precisión.")
                 st.balloons()
-            else: st.error("Tu conteo falló. Suma con cuidado las 6 paredes.")
+            else: 
+                st.error("Tu conteo falló. Suma con cuidado las 6 paredes.")
 
         if st.button("🔄 Cambiar de Castillo"):
             if 'pregunta_geo' in st.session_state: del st.session_state.pregunta_geo
