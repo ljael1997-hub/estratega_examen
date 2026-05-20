@@ -2,59 +2,74 @@ import streamlit as st
 import random
 import math
 
-def modulo_forja_streamlit():
-    st.title("⚒️ La Forja de Números (Torres de Poder)")
+# --- INTERFAZ VISUAL: CORRECCIÓN DE CONTENEDORES CON FLEXBOX INTERACTIVO ---
+    # Generamos los pisos. Nota: Quitamos el reversed para que se rendericen de forma natural en el contenedor flex invertido
+    pisos_base_html = "".join([
+        f'<div style="background-color: #3b82f6; border: 1px solid #111827; height: 18px; width: 85%; margin: 2px auto; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; text-align: center; line-height: 18px; flex-shrink: 0;">Piso {i+1}</div>' 
+        for i in range(r['base'])
+    ])
     
-    st.markdown("""
-    ### 🏰 El Hechizo de las Torres
-    En los exámenes de admisión, las potencias y las raíces son como conjuros de crecimiento y encogimiento para las torres del reino.
-    
-    * ⏫ **Elevar al Cuadrado (²):** Es el hechizo de **Crecimiento**. Si tu torre mide **3 pisos**, el hechizo la hace crecer multiplicando su altura original por sí misma ($3 \\times 3$). ¡Se transforma en una torre de **9 pisos**!
-    * ⏬ **Raíz Cuadrada (√):** Es el hechizo de **Encogimiento**. Si te dan una mega torre de **9 pisos**, la raíz cuadrada descubre de qué tamaño era originalmente antes del hechizo. ¡Regresa a ser de **3 pisos**!
-    """)
-    
-    if 'game_id_forja' not in st.session_state: 
-        st.session_state.game_id_forja = 0
-        
-    if 'reto_forja' not in st.session_state:
-        # Alturas de torre amigables para el alumno (de 2 a 6 pisos)
-        altura_original = random.choice([2, 3, 4, 5, 6])
-        mega_altura = altura_original ** 2
-        st.session_state.reto_forja = {
-            "base": altura_original,
-            "cuadrado": mega_altura
-        }
-        
-    r = st.session_state.reto_forja
-    gid = st.session_state.game_id_forja
-    
-    st.divider()
-    
-    # --- INTERFAZ VISUAL: CONSTRUCCIÓN DE LAS TORRES EN HTML/CSS ---
-    # Generamos los pisos apilados de abajo hacia arriba para ambas torres
-    pisos_base_html = "".join([f'<div style="background-color: #3b82f6; border: 2px solid #1e293b; height: 20px; width: 80px; margin: 2px auto; border-radius: 4px; color: white; font-size: 10px; font-weight: bold; text-align: center; line-height: 16px;">Piso {_ + 1}</div>' for _ in reversed(range(r['base']))])
-    
-    pisos_mega_html = "".join([f'<div style="background-color: #f59e0b; border: 2px solid #1e293b; height: 12px; width: 80px; margin: 1px auto; border-radius: 2px; color: #1e293b; font-size: 8px; font-weight: bold; text-align: center; line-height: 10px;">Piso {_ + 1}</div>' for _ in reversed(range(r['cuadrado']))])
+    pisos_mega_html = "".join([
+        f'<div style="background-color: #f59e0b; border: 1px solid #111827; height: 18px; width: 85%; margin: 2px auto; border-radius: 4px; color: #111827; font-size: 11px; font-weight: bold; text-align: center; line-height: 18px; flex-shrink: 0;">Piso {i+1}</div>' 
+        for i in range(r['cuadrado'])
+    ])
     
     html_torres = f"""
-    <div style="background-color: #111827; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; text-align: center; border: 1px solid #374151;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td style="width: 50%; vertical-align: bottom; padding: 10px; text-align: center;">
-                    <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px; font-size: 13px;">🏰 Torre Base ({r['base']} pisos)</div>
-                    <div style="display: block; margin: 0 auto;">{pisos_base_html}</div>
-                </td>
-                <td style="width: 50%; vertical-align: bottom; padding: 10px; text-align: center;">
-                    <div style="color: #fbbf24; font-weight: bold; margin-bottom: 10px; font-size: 13px;">⚡ Mega Torre ({r['cuadrado']} pisos)</div>
-                    <div style="display: block; margin: 0 auto;">{pisos_mega_html}</div>
-                </td>
-            </tr>
-        </table>
+    <div style="
+        background-color: #1e293b; 
+        padding: 15px; 
+        border-radius: 12px; 
+        font-family: 'Segoe UI', sans-serif; 
+        border: 2px solid #475569;
+        display: flex;
+        justify-content: space-around;
+        gap: 15px;
+        max-width: 500px;
+        margin: 0 auto;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.3);
+    ">
+        <div style="width: 45%; display: flex; flex-direction: column; align-items: center;">
+            <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-align: center;">
+                🏰 Torre Base ({r['base']} pisos)
+            </div>
+            <div style="
+                background-color: #0f172a; 
+                border-radius: 8px; 
+                padding: 10px 5px; 
+                width: 100%; 
+                height: 220px; 
+                display: flex; 
+                flex-direction: column-reverse; 
+                overflow-y: auto;
+                border: 1px solid #334155;
+            ">
+                {pisos_base_html}
+            </div>
+        </div>
+
+        <div style="width: 45%; display: flex; flex-direction: column; align-items: center;">
+            <div style="color: #fbbf24; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-align: center;">
+                ⚡ Mega Torre ({r['cuadrado']} pisos)
+            </div>
+            <div style="
+                background-color: #0f172a; 
+                border-radius: 8px; 
+                padding: 10px 5px; 
+                width: 100%; 
+                height: 220px; 
+                display: flex; 
+                flex-direction: column-reverse; 
+                overflow-y: auto;
+                border: 1px solid #334155;
+            ">
+                {pisos_mega_html}
+            </div>
+        </div>
     </div>
     """
     
-    # Renderizamos las torres flotantes. Le damos suficiente altura (320px) para que quepan las torres de hasta 36 pisos (6x6)
-    st.components.v1.html(html_torres, height=320)
+    # Renderizado final con altura controlada para que no empuje el resto de la interfaz hacia abajo
+    st.components.v1.html(html_torres, height=290)
     
     # --- SECCIÓN DE PREGUNTAS ---
     st.subheader("⚔️ Fase A: Desata el Crecimiento")
