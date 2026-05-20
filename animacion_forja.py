@@ -2,8 +2,34 @@ import streamlit as st
 import random
 import math
 
-# --- INTERFAZ VISUAL: CORRECCIÓN DE CONTENEDORES CON FLEXBOX INTERACTIVO ---
-    # Generamos los pisos. Nota: Quitamos el reversed para que se rendericen de forma natural en el contenedor flex invertido
+def modulo_forja_streamlit():
+    st.title("⚒️ La Forja de Números (Torres de Poder)")
+    
+    st.markdown("""
+    ### 🏰 El Hechizo de las Torres
+    En los exámenes de admisión, las potencias y las raíces son como conjuros de crecimiento y encogimiento para las torres del reino.
+    
+    * ⏫ **Elevar al Cuadrado (²):** Es el hechizo de **Crecimiento**. Si tu torre mide **3 pisos**, el hechizo la hace crecer multiplicando su altura original por sí misma ($3 \\times 3$). ¡Se transforma en una torre de **9 pisos**!
+    * ⏬ **Raíz Cuadrada (√):** Es el hechizo de **Encogimiento**. Si te dan una mega torre de **9 pisos**, la raíz cuadrada descubre de qué tamaño era originalmente antes del hechizo. ¡Regresa a ser de **3 pisos**!
+    """)
+    
+    if 'game_id_forja' not in st.session_state: 
+        st.session_state.game_id_forja = 0
+        
+    if 'reto_forja' not in st.session_state:
+        altura_original = random.choice([2, 3, 4, 5, 6])
+        mega_altura = altura_original ** 2
+        st.session_state.reto_forja = {
+            "base": altura_original,
+            "cuadrado": mega_altura
+        }
+        
+    r = st.session_state.reto_forja
+    gid = st.session_state.game_id_forja
+    
+    st.divider()
+    
+    # --- INTERFAZ VISUAL CORREGIDA (FLEXBOX RESPONSIVO) ---
     pisos_base_html = "".join([
         f'<div style="background-color: #3b82f6; border: 1px solid #111827; height: 18px; width: 85%; margin: 2px auto; border-radius: 4px; color: white; font-size: 11px; font-weight: bold; text-align: center; line-height: 18px; flex-shrink: 0;">Piso {i+1}</div>' 
         for i in range(r['base'])
@@ -67,8 +93,6 @@ import math
         </div>
     </div>
     """
-    
-    # Renderizado final con altura controlada para que no empuje el resto de la interfaz hacia abajo
     st.components.v1.html(html_torres, height=290)
     
     # --- SECCIÓN DE PREGUNTAS ---
@@ -88,9 +112,9 @@ import math
     if st.button("⚒️ Conjurar en la Forja"):
         if user_pot == r['cuadrado'] and user_raiz == r['base']:
             st.balloons()
-            st.success(f"¡LOGRADO! Comprendes el equilibrio perfecto del reino: la potencia estira la torre a {r['cuadrado']} pisos y la raíz la encoge de vuelta a {r['base']}.")
+            st.success(f"¡LOGRADO! El {r['base']}² es {r['cuadrado']} y la raíz de {r['cuadrado']} es {r['base']}.")
         else:
-            st.error("Los hechizos no se equilibraron. Recuerda: la Mega Torre debe ser el resultado de multiplicar la base por sí misma.")
+            st.error("Los hechizos no se equilibraron. Revisa tus cuentas.")
             
     if st.button("🔄 Forjar Nuevas Torres"):
         st.session_state.game_id_forja += 1
