@@ -636,7 +636,19 @@ def modulo_geometria_castillo():
 
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
-lista_temas = ["Duelo de Sacos", "La Forja (Potencias y Raíces)", "Leyes del Trono (Jerarquía Básica)", "Asalto a Fortalezas (Agrupación)", "Sistemas 2x2", "Estadística", "Magia del Punto", "Porcentajes Combinados", "Regla de Tres", "Las Crónicas del Castillo"]
+lista_temas = [
+    "Duelo de Sacos", 
+    "La Forja (Potencias y Raíces)", 
+    "Leyes del Trono (Jerarquía Básica)",
+    "Asalto a Fortalezas (Agrupación)",
+    "Sistemas 2x2",
+    "Estadística",
+    "Magia del Punto",
+    "Porcentajes Combinados",
+    "Regla de Tres",
+    "Reglas del Reino (mcm y MCD)",
+    "Geometría"
+]
 
 with st.sidebar:
     st.title("La Estratega")
@@ -697,5 +709,8 @@ elif seleccion_final == "Porcentajes Combinados":
     modulo_combinados_streamlit()
 elif seleccion_final == "Regla de Tres": 
     modulo_regla_de_tres()
-else:
+elif seleccion_final == "Reglas del Reino (mcm y MCD)":  # <-- Movido aquí
+    from animacion_divisibilidad import modulo_divisibilidad_streamlit
+    modulo_divisibilidad_streamlit()
+else:  # <-- El else ahora sí queda al final de todo
     modulo_geometria_castillo()
