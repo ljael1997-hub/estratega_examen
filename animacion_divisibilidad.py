@@ -12,6 +12,7 @@ def modulo_divisibilidad_streamlit():
     )
     st.divider()
 
+    # --- 1. SECCIÓN: SINCRONIZACIÓN DE ANTORCHAS (MCM) ---
     if sub_tema == "Sincronización de Antorchas (MCM)":
         st.markdown("""
         ### 📊 ¿Qué es el Mínimo Común Múltiplo (MCM)?
@@ -34,22 +35,20 @@ def modulo_divisibilidad_streamlit():
             """)
             
         with tab_reto:
-            if 'game_id_mcm' not in st.session_state:
-                st.session_state.game_id_mcm = 0
+            # Inicializamos el contador para este reto
+            if 'version_mcm' not in st.session_state:
+                st.session_state.version_mcm = 1
                 
-            gid_mcm = st.session_state.game_id_mcm
-            
-            # UNIFICADO: Valores fijos de nivel examen para el reto
             t1, t2, t3 = 8, 12, 15
             
             st.info(f"""
-            城堡 **Misión del Reino (Dificultad de Examen):** Para evitar que el castillo quede a oscuras, los vigías cambian sus antorchas en intervalos complejos:
+            🏰 **Misión del Reino (Dificultad de Examen):** Para evitar que el castillo quede a oscuras, los vigías cambian sus antorchas en intervalos complejos:
             * 🎯 **Torre Norte:** Cada **{t1}** horas.
             * 🎯 **Torre Sur:** Cada **{t2}** horas.
             * 🎯 **Torre Este:** Cada **{t3}** horas.
             """)
 
-            # UNIFICADO: Pistas visuales corregidas para la serie de 8, 12 y 15
+            # Croquis visual estable con pistas ocultas
             html_linea_tiempo = f"""
             <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; color: white; border: 2px solid #475569;">
                 <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; text-align: center;">⏳ Línea de Tiempo de las Torres</div>
@@ -65,11 +64,12 @@ def modulo_divisibilidad_streamlit():
             """
             components.html(html_linea_tiempo, height=185)
             
-            user_mcm = st.number_input("¿En cuántas horas volverán a coincidir todos los vigías?", step=1, value=None, key=f"inp_mcm_{gid_mcm}", placeholder="Encuentra el MCM de 8, 12 y 15")
-            
-            col_eval_mcm, col_next_mcm = st.columns(2)
-            with col_eval_mcm:
-                if st.button("🔏 Sellar Guardia (Verificar)", use_container_width=True):
+            # Formulario seguro para evitar que Streamlit borre la sección al verificar
+            with st.form(key=f"form_mcm_{st.session_state.version_mcm}"):
+                user_mcm = st.number_input("¿En cuántas horas volverán a coincidir todos los vigías?", step=1, value=None, placeholder="Encuentra el MCM de 8, 12 y 15")
+                submit_mcm = st.form_submit_button("🔏 Sellar Guardia (Verificar)")
+                
+                if submit_mcm:
                     if user_mcm is not None:
                         if user_mcm == 120: 
                             st.success("¡VICTORIA! A las 120 horas todas las antorchas coinciden. Has blindado el castillo.")
@@ -78,11 +78,13 @@ def modulo_divisibilidad_streamlit():
                             st.error(f"A las {user_mcm} horas no coinciden todos los vigías. Sigue buscando el primer múltiplo común real.")
                     else:
                         st.warning("Por favor, introduce un número antes de verificar.")
-            with col_next_mcm:
-                if st.button("🔄 Nuevas Antorchas", use_container_width=True):
-                    st.session_state.game_id_mcm += 1
-                    st.rerun()
+            
+            # Botón de reiniciar por fuera del formulario para limpiar el estado limpiamente
+            if st.button("🔄 Reiniciar Entrenamiento MCM"):
+                st.session_state.version_mcm += 1
+                st.rerun()
 
+    # --- 2. SECCIÓN: EL REPARTO JUSTO DEL BOTÍN (MCD) ---
     elif sub_tema == "El Reparto Justo del Botín (MCD)":
         st.markdown("""
         ### 📦 ¿Qué es el Máximo Común Divisor (MCD)?
@@ -104,12 +106,10 @@ def modulo_divisibilidad_streamlit():
             """)
 
         with tab_reto:
-            if 'game_id_mcd' not in st.session_state:
-                st.session_state.game_id_mcd = 0
-                
-            gid_mcd = st.session_state.game_id_mcd
+            # Inicializamos el contador para este reto
+            if 'version_mcd' not in st.session_state:
+                st.session_state.version_mcd = 1
 
-            # Valores del reto de 4 elementos
             d = {"oro": 36, "plata": 48, "gemas": 60, "pergaminos": 72}
 
             st.warning(f"""
@@ -120,6 +120,7 @@ def modulo_divisibilidad_streamlit():
             * 📜 **{d['pergaminos']}** Pergaminos Antiguos.
             """)
 
+            # Croquis visual de pistas sin revelar la respuesta
             html_fraccionamiento = f"""
             <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; color: white; border: 2px solid #475569;">
                 <div style="color: #a855f7; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; text-align: center;">📐 Mapa de Pistas de Fraccionamiento</div>
@@ -135,12 +136,12 @@ def modulo_divisibilidad_streamlit():
             """
             components.html(html_fraccionamiento, height=195)
 
-            user_mcd = st.number_input("¿Cuál es el número máximo de cofres iguales que puedes armar?", step=1, value=None, key=f"inp_mcd_{gid_mcd}", placeholder="Encuentra el MCD de 36, 48, 60 y 72")
+            # Formulario seguro para el MCD
+            with st.form(key=f"form_mcd_{st.session_state.version_mcd}"):
+                user_mcd = st.number_input("¿Cuál es el número máximo de cofres iguales que puedes armar?", step=1, value=None, placeholder="Encuentra el MCD de 36, 48, 60 y 72")
+                submit_mcd = st.form_submit_button("👑 Distribuir Botín")
 
-            # CORREGIDO: Columnas de acción agregadas con botón para reiniciar ejercicio
-            col_eval_mcd, col_next_mcd = st.columns(2)
-            with col_eval_mcd:
-                if st.button("👑 Distribuir Botín", use_container_width=True):
+                if submit_mcd:
                     if user_mcd is not None:
                         if user_mcd == 12: 
                             st.success(f"¡LOGRADO! Armaste un máximo de 12 cofres perfectos (cada uno con {d['oro']//12} de oro, {d['plata']//12} de plata, {d['gemas']//12} gemas y {d['pergaminos']//12} pergaminos).")
@@ -149,7 +150,8 @@ def modulo_divisibilidad_streamlit():
                             st.error("Ese número de divisiones no reparte los 4 recursos de forma exacta o no es el divisor máximo común.")
                     else:
                         st.warning("Por favor, introduce un número antes de verificar.")
-            with col_next_mcd:
-                if st.button("🔄 Nuevo Botín", use_container_width=True):
-                    st.session_state.game_id_mcd += 1
-                    st.rerun()
+            
+            # Botón de reiniciar visible y funcional por fuera del formulario
+            if st.button("🔄 Reiniciar Entrenamiento Botín"):
+                st.session_state.version_mcd += 1
+                st.rerun()
