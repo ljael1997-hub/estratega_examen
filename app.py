@@ -2,6 +2,8 @@ import random
 import streamlit as st
 import streamlit.components.v1 as components
 import statistics
+
+# Importaciones de módulos externos
 from animacion_sustitucion import animacion_sustitucion
 from animacion_porcentaje import modulo_porcentajes_streamlit
 from animacion_porcentajes_combinados import modulo_combinados_streamlit
@@ -126,7 +128,7 @@ def modulo_sacos():
 
     if st.button("🔄 Nuevos Números"):
         st.session_state.game_id += 1
-        del st.session_state.soldados
+        if 'soldados' in st.session_state: del st.session_state.soldados
         st.session_state.revisado = False
         st.rerun()
 
@@ -253,7 +255,7 @@ def modulo_estadistica():
 
     if st.button("🔄 Nuevas Personas"):
         st.session_state.game_id_est += 1
-        del st.session_state.datos_est
+        if 'datos_est' in st.session_state: del st.session_state.datos_est
         st.rerun()
 
 
@@ -383,9 +385,20 @@ def modulo_geometria_castillo():
     
     mision = st.selectbox(
         "🗺️ Elige qué zona del Castillo quieres explorar:",
-        ["Misión 1: La Muralla (Perímetros)", "Misión 2: El Patio de Armas (Áreas)", "Misión 3: La Escalera de la Torre (Pitágoras)"]
+        ["Misión 1: La Muralla (Perímetros)", "Misión 2: El Patio de Armas (Áreas)", "Misión 3: La Escalera de la Torre (Pitágoras)"],
+        key="mision_geometria"
     )
     st.divider()
+
+    # --- BUGFIX: Limpiar estados cruzados al cambiar de sub-misión ---
+    if "ultima_mision" not in st.session_state:
+        st.session_state.ultima_mision = mision
+    if st.session_state.ultima_mision != mision:
+        st.session_state.ultima_mision = mision
+        if 'pregunta_geo' in st.session_state: del st.session_state.pregunta_geo
+        if 'pregunta_area' in st.session_state: del st.session_state.pregunta_area
+        if 'pregunta_pit' in st.session_state: del st.session_state.pregunta_pit
+        st.rerun()
 
     if mision == "Misión 1: La Muralla (Perímetros)":
         st.markdown("""
@@ -522,7 +535,7 @@ def modulo_geometria_castillo():
             </div>
             """
         elif a['tipo'] == "círculo":
-            r, _, _ = a['datos']
+            r_val, _, _ = a['datos']
             html_patio = f"""
             <div style="background-color: #1e293b; padding: 20px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; max-width: 340px; margin: 0 auto; border: 2px solid #475569;">
                 <div style="position: relative; height: 130px; width: 100%;">
@@ -530,7 +543,7 @@ def modulo_geometria_castillo():
                         <circle cx="150" cy="65" r="50" fill="rgba(168,85,247,0.15)" stroke="#a855f7" stroke-width="3"/>
                         <line x1="150" y1="65" x2="200" y2="65" stroke="#60a5fa" stroke-width="3" stroke-dasharray="3"/>
                     </svg>
-                    <div style="position: absolute; top: 45px; left: 155px; font-weight: bold; font-size: 14px; color: #60a5fa;">Radio: {r}m</div>
+                    <div style="position: absolute; top: 45px; left: 155px; font-weight: bold; font-size: 14px; color: #60a5fa;">Radio: {r_val}m</div>
                 </div>
             </div>
             """
@@ -555,7 +568,7 @@ def modulo_geometria_castillo():
         banner_resuelve_lo_siguiente()
         if a['tipo'] == "rectángulo": st.code(f"Fórmula de Examen: Área = {b}m × {h}m", language="text")
         elif a['tipo'] == "triángulo": st.code(f"Fórmula de Examen: Área = ({b}m × {h}m) ÷ 2", language="text")
-        elif a['tipo'] == "círculo": st.code(f"Fórmula de Examen: Área = 3.14 × ({r}m × {r}m)", language="text")
+        elif a['tipo'] == "círculo": st.code(f"Fórmula de Examen: Área = 3.14 × ({r_val}m × {r_val}m)", language="text")
         else: st.code(f"Fórmula de Examen: Área = ({a['datos'][2]}m × {ap}m) ÷ 2", language="text")
         st.write("")
 
@@ -675,12 +688,10 @@ elif seleccion_final == "Sistemas 2x2":
 elif seleccion_final == "Estadística": 
     modulo_estadistica()
 elif seleccion_final == "Magia del Punto": 
-    # Inyectamos banner y examen de forma directa antes del renderizado nativo
     banner_resuelve_lo_siguiente()
     st.code("Problema de Examen: Cálculo de Porcentajes Rápidos (Método del Punto Decimal)", language="text")
     modulo_porcentajes_streamlit()
 elif seleccion_final == "Porcentajes Combinados":
-    # Inyectamos banner y examen de forma directa antes del renderizado nativo
     banner_resuelve_lo_siguiente()
     st.code("Problema de Examen: Multiplicación de Descuentos e Impuestos Consecutivos", language="text")
     modulo_combinados_streamlit()
