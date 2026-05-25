@@ -1,146 +1,107 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import random
-import math
-
-# Función auxiliar para calcular el mcm de tres números
-def calcular_mcm(a, b, c):
-    lcm_ab = (a * b) // math.gcd(a, b)
-    return (lcm_ab * c) // math.gcd(lcm_ab, c)
 
 def modulo_divisibilidad_streamlit():
-    st.title("🧮 Las Reglas del Reino: mcm y MCD")
+    # --- DETALLE 2: Títulos con MCM y MCD correctamente en mayúsculas ---
+    st.title("👑 Reglas del Reino (MCM y MCD)")
     
-    # Selector de sub-tema dentro del módulo
-    herramienta = st.radio(
-        "Elige tu entrenamiento de divisibilidad:",
-        ["⚔️ El Relevo de las Guardias (mcm)", "👑 El Reparto del Botín (MCD)"],
+    sub_tema = st.radio(
+        "Elige tu entrenamiento:",
+        ["Sincronización de Antorchas (MCM)", "El Reparto Justo del Botín (MCD)"],
         horizontal=True
     )
-    
     st.divider()
-    
-    if "game_id_div" not in st.session_state:
-        st.session_state.game_id_div = 0
-        
-    gid = st.session_state.game_id_div
 
-    # =========================================================================
-    # CASE 1: MÍNIMO COMÚN MÚLTIPLO
-    # =========================================================================
-    if herramienta == "⚔️ El Relevo de las Guardias (mcm)":
+    if sub_tema == "Sincronización de Antorchas (MCM)":
+        # --- DETALLE 3: Definición ultra clara para personas que inician desde cero ---
         st.markdown("""
-        ### 🏰 Sincronización de Antorchas (mcm)
-        Para evitar que el castillo quede a oscuras, los vigías de las tres torres principales cambian sus antorchas en intervalos diferentes.
-        Tu misión es calcular **el menor tiempo posible** en el que todos los vigías coincidirán cambiando sus antorchas al mismo tiempo.
+        ### 📊 ¿Qué es el Mínimo Común Múltiplo (MCM)?
+        Imagina que varios eventos se repiten en tiempos diferentes (como el parpadeo de luces o las guardias de los vigías). 
+        El **MCM** es simplemente **el momento más cercano en el futuro en el que todos van a coincidir al mismo tiempo**.
+        * **Múltiplo:** Los números que salen de la tabla de multiplicar de cada valor.
+        * **Común:** Que es el mismo número para todos.
+        * **Mínimo:** El primero que encuentres en la línea del tiempo.
         """)
         
-        if 'reto_mcm' not in st.session_state:
-            # Seleccionamos tres números amigables para examen
-            t1, t2, t3 = random.choice([(3, 4, 6), (4, 6, 8), (2, 5, 10), (3, 5, 6)])
-            st.session_state.reto_mcm = {
-                "t1": t1, "t2": t2, "t3": t3,
-                "resultado": calcular_mcm(t1, t2, t3)
-            }
+        if 'datos_mcm' not in st.session_state:
+            st.session_state.datos_mcm = (3, 4, 6) # Puedes hacerlo dinámico después
             
-        m = st.session_state.reto_mcm
+        t1, t2, t3 = st.session_state.datos_mcm
         
         st.info(f"""
-        📋 **Reporte de los Vigías:**
-        * 🔥 **Torre del Norte:** Cambia antorcha cada **{m['t1']} horas**.
-        * 🔥 **Torre del Sur:** Cambia antorcha cada **{m['t2']} horas**.
-        * 🔥 **Torre del Este:** Cambia antorcha cada **{m['t3']} horas**.
+        🏰 **Misión del Reino:** Para evitar que el castillo quede a oscuras, los vigías cambian sus antorchas en intervalos diferentes:
+        * 🎯 **Torre Norte:** Cada **{t1}** horas.
+        * 🎯 **Torre Sur:** Cada **{t2}** horas.
+        * 🎯 **Torre Este:** Cada **{t3}** horas.
         """)
-        
-        # Mapa visual del reloj del reino en HTML/CSS
-        html_mcm = f"""
-        <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #3b82f6; max-width: 400px; margin: 0 auto; color: white; font-family: sans-serif; text-align: center;">
-            <div style="font-weight: bold; color: #60a5fa; margin-bottom: 10px;">⏰ LÍNEA DE TIEMPO DEL REINO</div>
-            <div style="display: flex; justify-content: space-around; font-size: 14px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 6px;">
-                <div>🏰 T1: {m['t1']}h, {m['t1']*2}h, {m['t1']*3}h...</div>
-                <div>Castillo</div>
-                <div>🏰 T2: {m['t2']}h, {m['t2']*2}h, {m['t2']*3}h...</div>
-            </div>
-            <div style="margin-top: 10px; font-size: 12px; color: #94a3b8;">Buscamos el primer número que aparezca en la lista de las 3 torres.</div>
-        </div>
-        """
-        st.components.v1.html(html_mcm, height=110)
-        
-        # Banner reutilizable de resolución
-        st.markdown("""
-            <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
-                <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
-            </div>
-        """, unsafe_allow_html=True)
-        st.code(f"Misión de Examen: Obtén el mcm de ({m['t1']}, {m['t2']}, {m['t3']})", language="text")
-        
-        user_mcm = st.number_input("¿En cuántas horas volverán a coincidir todos los vigías?", step=1, key=f"input_mcm_{gid}", value=None, placeholder="Encuentra el múltiplo común más pequeño")
-        
-        col_eval, col_next = st.columns(2)
-        with col_eval:
-            if st.button("🏹 Sellar Guardia (Verificar)", use_container_width=True):
-                if user_mcm == m['resultado']:
-                    st.balloons()
-                    st.success(f"¡EXCELENTE ESTRATEGA! Coinciden exactamente a las {m['resultado']} horas. Las defensas del reino están sincronizadas.")
-                else:
-                    st.error(f"¡Alerta! A las {user_mcm} horas alguna torre se quedará sin fuego. Revisa los múltiplos.")
-        with col_next:
-            if st.button("🔄 Nuevas Guardias", use_container_width=True):
-                st.session_state.game_id_div += 1
-                if 'reto_mcm' in st.session_state: del st.session_state.reto_mcm
-                st.rerun()
 
-    # =========================================================================
-    # CASE 2: MÁXIMO COMÚN DIVISOR
-    # =========================================================================
-    else:
-        st.markdown("""
-        ### 💰 El Reparto Justo del Botín (MCD)
-        Los caballeros han regresado con valiosos recursos. El Rey exige repartirlos en **cofres idénticos** de manera que se use la **máxima cantidad de cofres posibles** y no sobre absolutamente nada.
-        """)
-        
-        if 'reto_mcd' not in st.session_state:
-            # Pares de recursos amigables con MCD claro
-            oro, plata = random.choice([(24, 36), (30, 45), (18, 27), (40, 60)])
-            st.session_state.reto_mcd = {
-                "oro": oro,
-                "plata": plata,
-                "resultado": math.gcd(oro, plata)
-            }
-            
-        d = st.session_state.reto_mcd
-        
-        st.warning(f"📦 **Recursos en la Cámara Real:** `{d['oro']} Monedas de Oro` y `{d['plata']} Barras de Plata`.")
-        
-        html_mcd = f"""
-        <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; border: 2px solid #a855f7; max-width: 400px; margin: 0 auto; color: white; font-family: sans-serif; text-align: center;">
-            <div style="font-weight: bold; color: #c084fc; margin-bottom: 10px;">📦 REGLA DE FRACCIONAMIENTO</div>
-            <div style="font-size: 13px; color: #94a3b8; line-height: 18px;">
-                Debes cortar el total de oro ({d['oro']}) y plata ({d['plata']}) en grupos del mismo tamaño. 
-                Buscamos el número más grande que pueda dividir a ambos exactamente.
+        # --- DETALLE 1: HTML/SVG Estable con altura explícita para que no se pierda ---
+        html_linea_tiempo = f"""
+        <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; border: 2px solid #475569;">
+            <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">⏳ Línea de Tiempo del Reino</div>
+            <div style="text-align: left; font-size: 13px; color: #94a3b8; line-height: 22px;">
+                • <b>Vigía 1 ({t1}h):</b> {t1}h, {t1*2}h, {t1*3}h, {t1*4}h, {t1*5}h... <br>
+                • <b>Vigía 2 ({t2}h):</b> {t2}h, {t2*2}h, {t2*3}h, {t2*4}h, {t2*5}h... <br>
+                • <b>Vigía 3 ({t3}h):</b> {t3}h, {t3*2}h, {t3*3}h, {t3*4}h, {t3*5}h... <br>
+            </div>
+            <div style="margin-top: 10px; padding: 5px; background: rgba(0,0,0,0.2); font-size: 12px; color: #f59e0b;">
+                💡 <i>Busca el número más chico que aparezca en las tres filas.</i>
             </div>
         </div>
         """
-        st.components.v1.html(html_mcd, height=110)
+        components.html(html_linea_tiempo, height=160)
         
+        # Entrada del usuario
+        user_mcm = st.number_input("¿En cuántas horas volverán a coincidir todos los vigías?", step=1, value=None, placeholder="Encuentra el MCM")
+        
+        if st.button("🔏 Sellar Guardia (Verificar)"):
+            if user_mcm == 12: # MCM de 3, 4, 6
+                st.success("¡Excelente estratega! A las 12 horas todas las antorchas se sincronizan.")
+                st.balloons()
+            else:
+                st.error("Ese tiempo no es común para todos o no es el más pequeño. Revisa las listas de arriba.")
+
+    elif sub_tema == "El Reparto Justo del Botín (MCD)":
+        # --- DETALLE 3: Definición conceptual intuitiva para MCD ---
         st.markdown("""
-            <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
-                <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
+        ### 📦 ¿Qué es el Máximo Común Divisor (MCD)?
+        Imagina que tienes grandes cantidades de recursos diferentes y quieres **organizarlos en grupos o cofres exactamente iguales**, sin que sobre nada y haciendo los grupos **lo más grandes posibles**.
+        * **Divisor:** Un número que corta o divide a tus recursos de forma exacta (sin dejar decimales).
+        * **Común:** El tamaño de grupo sirve tanto para el oro como para la plata.
+        * **Máximo:** El contenedor más grande posible para terminar más rápido.
+        """)
+
+        if 'datos_mcd' not in st.session_state:
+            st.session_state.datos_mcd = (18, 27)
+
+        oro, plata = st.session_state.datos_mcd
+
+        st.warning(f"""
+        💰 **Recursos en la Cámara Real:** Tienen **{oro} Monedas de Oro** y **{plat} Barras de Plata**.
+        El Rey exige guardarlos en cofres idénticos. No se pueden mezclar tipos de monedas en la misma división interna y no debe sobrar absolutamente nada.
+        """)
+
+        # --- DETALLE 1: Renderizado fijo garantizado ---
+        html_fraccionamiento = f"""
+        <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; text-align: center; font-family: 'Segoe UI', sans-serif; color: white; border: 2px solid #475569;">
+            <div style="color: #a855f7; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">📐 Regla de Fraccionamiento</div>
+            <div style="text-align: left; font-size: 13px; color: #94a3b8; line-height: 22px;">
+                • Números que dividen al <b>Oro ({oro})</b> exactamente: 1, 2, 3, 6, <b>9</b>, 18.<br>
+                • Números que dividen al la <b>Plata ({plata})</b> exactamente: 1, 3, <b>9</b>, 27.<br>
             </div>
-        """, unsafe_allow_html=True)
-        st.code(f"Misión de Examen: Determina el MCD de ({d['oro']}, {d['plata']})", language="text")
-        
-        user_mcd = st.number_input("¿Cuál es el número máximo de cofres iguales que puedes armar?", step=1, key=f"input_mcd_{gid}", value=None, placeholder="Busca el divisor común más grande")
-        
-        col_eval, col_next = st.columns(2)
-        with col_eval:
-            if st.button("👑 Distribuir Botín", use_container_width=True):
-                if user_mcd == d['resultado']:
-                    st.balloons()
-                    st.success(f"¡PERFECTO! Puedes armar un máximo de {d['resultado']} cofres. Cada cofre tendrá {d['oro']//d['resultado']} monedas de oro y {d['plata']//d['resultado']} barras de plata.")
-                else:
-                    st.error(f"No es posible armar {user_mcd} cofres idénticos sin romper las piezas o dejar fuera recursos.")
-        with col_next:
-            if st.button("🔄 Nuevo Botín", use_container_width=True):
-                st.session_state.game_id_div += 1
-                if 'reto_mcd' in st.session_state: del st.session_state.reto_mcd
-                st.rerun()
+            <div style="margin-top: 10px; padding: 5px; background: rgba(0,0,0,0.2); font-size: 12px; color: #f59e0b;">
+                💡 <i>¿Cuál es el número más grande que comparte la plata y el oro para hacer los cofres?</i>
+            </div>
+        </div>
+        """
+        components.html(html_fraccionamiento, height=160)
+
+        user_mcd = st.number_input("¿Cuál es el número máximo de cofres iguales que puedes armar?", step=1, value=None, placeholder="Busca el divisor común más grande")
+
+        if st.button("👑 Distribuir Botín"):
+            if user_mcd == 9: # MCD de 18, 27
+                st.success("¡LOGRADO! Puedes armar 9 cofres idénticos (cada uno con 2 de oro y 3 de plata).")
+                st.balloons()
+            else:
+                st.error("Ese tamaño de cofre deja recursos fuera o no es el más óptimo.")
