@@ -504,7 +504,7 @@ def modulo_geometria_castillo():
                 problema = f"La plaza central es un **hexágono regular**. Cada lado mide {lado}m y su Apotema es de {apotema}m.<br>⚡ <i>Estrategia: Saca la orilla total ({lado} × 6), multiplícala por el apotema y divide entre 2.</i>"
                 datos = (lado, apotema, perimetro)
 
-            st.session_state.pregunta_area = {"tipo": tipo_patio, "prob": समस्या, "total": area, "datos": datos}
+            st.session_state.pregunta_area = {"tipo": tipo_patio, "prob": problema, "total": area, "datos": datos}
 
         a = st.session_state.pregunta_area
         st.markdown(f"<div style='background-color: rgba(168,85,247,0.1); padding:15px; border-radius:8px; border-left:5px solid #a855f7;'>📋 <b>Reto:</b> {a['prob']}</div>", unsafe_allow_html=True)
@@ -638,7 +638,7 @@ def modulo_geometria_castillo():
 
 
 # =====================================================================
-# 6. NUEVO AUXILIAR Y MÓDULO: EL TALLER DE ESCUDOS (Fracciones)
+# 6. AUXILIAR Y MÓDULO: EL TALLER DE ESCUDOS (Fracciones)
 # =====================================================================
 def generar_svg_escudo(cortes, pintados, color_pintado="#ef4444"):
     svg_ancho, svg_alto = 200, 200
@@ -720,11 +720,14 @@ def modulo_fracciones_final():
             with st.form(key=f"form_equiv_{st.session_state.v_equiv}"):
                 submit_eq = st.form_submit_button("⚔️ Presentar Escudo")
                 if submit_eq:
+                    # Corrección matemática cruzada limpia para evitar bloqueos por estados clonados
                     if num_pintados * req['base_c'] == num_cortes * req['base_p'] and num_cortes != req['base_c']:
-                        st.success("¡FORJA PERFECTA!")
+                        st.success("¡FORJA PERFECTA! Tu escudo cubre exactamente la misma área.")
                         st.balloons()
+                    elif num_cortes == req['base_c']:
+                        st.error("¡Es el mismo escudo! El Rey te pide forjar uno diferente pero equivalente (con más o menos cortes).")
                     else:
-                        st.error("No es equivalente o usaste el mismo tamaño de cortes.")
+                        st.error("Los escudos no coinciden. Prueba ajustando los cortes y las partes pintadas.")
 
             if st.button("🔄 Nuevo Reto Equivalencia"):
                 st.session_state.reto_equiv = random.choice([b for b in banco_equivalencias if b['texto'] != req['texto']])
@@ -733,30 +736,53 @@ def modulo_fracciones_final():
 
     elif sub_tema == "El Escribano Real (Simplificación)":
         st.markdown("### 📝 Simplificar Fracciones")
+        
+        # --- NUEVA EXPLICACIÓN ACCESIBLE PARA EL USUARIO ---
+        st.info("""
+        📚 **Glosario del Escribano:**
+        * 🔝 **Numerador (Número de arriba):** Te dice cuántas partes del escudo están pintadas.
+        * 🔜 **Denominador (Número de abajo):** Te dice en cuántas partes en total se cortó el escudo.
+        * ✒️ **Simplificar:** Significa hacer los números más pequeños dividiendo arriba y abajo entre el mismo número ($2, 3, 5...$), hasta que ya no se pueda encoger más. ¡La figura sigue representando la misma cantidad!
+        """)
+        
         tab_explicacion, tab_reto = st.tabs(["📖 Ver ejemplo", "🎯 ¡Pruébalo tú mismo!"])
+        
+        with tab_explicacion:
+            st.markdown("""
+            **Ejemplo Práctico:** Si un escudo tiene **4/8** pintado (4 de arriba, 8 de abajo):
+            1. Dividimos ambos entre 2: $4 \\div 2 = 2$ y $8 \\div 2 = 4$. Nos queda **2/4**.
+            2. Volvemos a dividir entre 2: $2 \\div 2 = 1$ y $4 \\div 2 = 2$. Nos queda **1/2**.  
+            ¡**1/2** es la mínima expresión!
+            """)
         
         with tab_reto:
             banco_simplificar = [
                 {"original_p": 6, "original_c": 18, "ans_p": 1, "ans_c": 3},
-                {"original_p": 8, "original_c": 12, "ans_p": 2, "ans_c": 3}
+                {"original_p": 8, "original_c": 12, "ans_p": 2, "ans_c": 3},
+                {"original_p": 5, "original_c": 15, "ans_p": 1, "ans_c": 3},
+                {"original_p": 4, "original_c": 10, "ans_p": 2, "ans_c": 5}
             ]
             if 'reto_simp' not in st.session_state:
                 st.session_state.reto_simp = random.choice(banco_simplificar)
                 st.session_state.v_simp = 1
                 
             simp = st.session_state.reto_simp
-            st.warning(f"Simplifica al máximo la fracción: **{simp['original_p']}/{simp['original_c']}**")
+            
+            banner_resuelve_lo_siguiente()
+            st.warning(f"Simplifica hasta su mínima expresión la fracción: **{simp['original_p']}/{simp['original_c']}**")
             components.html(f"<center>{generar_svg_escudo(simp['original_c'], simp['original_p'], '#38bdf8')}</center>", height=210)
             
             with st.form(key=f"form_simp_{st.session_state.v_simp}"):
-                user_p = st.number_input("Numerador (Arriba)", step=1, value=None)
-                user_c = st.number_input("Denominador (Abajo)", step=1, value=None)
+                user_p = st.number_input("Numerador 🔝 (Número de arriba)", step=1, value=None, placeholder="Partes pintadas simplificadas")
+                user_c = st.number_input("Denominador 🔜 (Número de abajo)", step=1, value=None, placeholder="Cortes totales simplificados")
                 if st.form_submit_button("✒️ Sellar Registro"):
                     if user_p == simp['ans_p'] and user_c == simp['ans_c']:
-                        st.success("¡Mínima expresión correcta!")
+                        st.success("¡EXCELENTE TRABAJO! Has encontrado la mínima expresión del pergamino.")
                         st.balloons()
+                    elif user_p is not None and user_c is not None and user_p * simp['original_c'] == user_c * simp['original_p']:
+                        st.error("¡Vas por buen camino y es equivalente, pero aún se puede simplificar más! Reduce los números al máximo.")
                     else:
-                        st.error("Aún no es la mínima expresión.")
+                        st.error("Esos números no corresponden a la simplificación. Divide arriba y abajo entre el mismo factor.")
                         
             if st.button("🔄 Siguiente Pergamino"):
                 st.session_state.reto_simp = random.choice([b for b in banco_simplificar if b['original_c'] != simp['original_c']])
@@ -770,8 +796,8 @@ lista_temas = [
     "La Forja (Potencias y Raíces)", 
     "Leyes del Trono (Jerarquía Básica)",
     "Asalto a Fortalezas (Agrupación)",
-    "Reglas del Reino (MCM y MCD)",  # Actualizado el nombre visual
-    "Fracciones (Fase 1)",           # Nuevo tema
+    "Reglas del Reino (MCM y MCD)",
+    "Fracciones (Fase 1)",
     "Sistemas 2x2",
     "Estadística",
     "Magia del Punto",
@@ -796,7 +822,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- ACORDEÓN DE SIGNOS (DICCIONARIO GLOBAL) ---
+# --- ACORDEÓN DE SIGNOS (DICCIONARIO GLOBAL EXPANDIDO) ---
 with st.sidebar:
     with st.expander("📚 Acordeón: ¿Qué significan estas operaciones?"):
         st.markdown("""
@@ -812,7 +838,15 @@ with st.sidebar:
         
         **🌱 Raíz Cuadrada (√):**
         * **$\\sqrt{25}$** -> Es la operación al revés. Si te dan un piso cuadrado de $25$ bloques y te preguntan: *¿Cuánto mide su pared de largo?*, la respuesta es $5$.
-        """)
+
+        <hr style="border-color: rgba(255,255,255,0.1);">
+
+        **🛡️ Fracciones (Conceptos Clave):**
+        * **Numerador (Arriba):** Las piezas seleccionadas, comidas o coloreadas.
+        * **Denominador (Abajo):** El total de partes iguales en las que cortaste la unidad.
+        * **Fracciones Equivalentes:** Fracciones que se escriben diferente pero representan la misma cantidad o porción visual.
+        * **Simplificar:** Dividir tanto el número de arriba como el de abajo por un mismo divisor común hasta reducirlos a su mínima expresión.
+        """, unsafe_allow_html=True)
 
 
 # --- RENDERIZADO DE LOS JUEGOS ---
@@ -841,7 +875,7 @@ elif seleccion_final == "Regla de Tres":
     modulo_regla_de_tres()
 elif seleccion_final == "Reglas del Reino (MCM y MCD)":
     modulo_divisibilidad_streamlit()
-elif seleccion_final == "Fracciones (Fase 1)":  # <-- Renderizado seguro
+elif seleccion_final == "Fracciones (Fase 1)":
     modulo_fracciones_final()
 else: 
     modulo_geometria_castillo()
