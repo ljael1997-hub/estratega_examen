@@ -2,6 +2,7 @@ import random
 import streamlit as st
 import streamlit.components.v1 as components
 import statistics
+import math
 
 # Importaciones de módulos externos
 from animacion_sustitucion import animacion_sustitucion
@@ -9,6 +10,7 @@ from animacion_porcentaje import modulo_porcentajes_streamlit
 from animacion_porcentajes_combinados import modulo_combinados_streamlit
 from animacion_jerarquia_basica import modulo_jerarquia_basica_streamlit
 from animacion_forja import modulo_forja_streamlit
+from animacion_divisibilidad import modulo_divisibilidad_streamlit
 
 # --- CONFIGURACIÓN INICIAL ---
 st.set_page_config(page_title="La Estratega de Exámenes", layout="centered")
@@ -126,9 +128,9 @@ def modulo_sacos():
             else:
                 st.error("El resultado final no es correcto. Intenta la resta de los sacos otra vez.")
 
-    if st.button("🔄 Nuevos Números"):
+    if st.button("🔄 Nuevos Números", key="btn_nuevos_sacos"):
         st.session_state.game_id += 1
-        if 'soldados' in st.session_state: del st.session_state.soldados
+        st.session_state.pop('soldados', None)
         st.session_state.revisado = False
         st.rerun()
 
@@ -191,7 +193,7 @@ def modulo_ecuaciones():
         components.html(html_anim, height=400)
 
     if st.button("🔄 Nuevo Candado"):
-        if 'pregunta' in st.session_state: del st.session_state.pregunta
+        st.session_state.pop('pregunta', None)
         st.session_state.mostrar_hack = False
         st.rerun()
 
@@ -222,7 +224,7 @@ def modulo_estadistica():
 
     # MEDIA
     st.subheader("2. La Media 🤝 (La Cooperacha)")
-    st.write(f"Imagina que todos juntan su dinero y se lo reparten igual entre los {len(datos)} que son.")
+    st.write(f"Imagina que todos juntan su dinero y se lo reparten igual entre los {len(datos)} que son. (Redondea a 1 decimal)")
     col1, col2 = st.columns(2)
     with col1: user_suma = st.number_input("Paso A: Suma todos los números:", step=1, key=f"suma_{gid}", value=None)
     with col2: user_media = st.number_input(f"Paso B: Suma ÷ {len(datos)}:", step=0.1, key=f"media_{gid}", value=None)
@@ -255,7 +257,7 @@ def modulo_estadistica():
 
     if st.button("🔄 Nuevas Personas"):
         st.session_state.game_id_est += 1
-        if 'datos_est' in st.session_state: del st.session_state.datos_est
+        st.session_state.pop('datos_est', None)
         st.rerun()
 
 
@@ -375,7 +377,7 @@ def modulo_regla_de_tres():
             st.error("La balanza se inclinó. Sigue la dirección de las flechas y vuelve a calcular.")
 
     if st.button("🔄 Nuevo Reto"):
-        if 'pregunta_prop' in st.session_state: del st.session_state.pregunta_prop
+        st.session_state.pop('pregunta_prop', None)
         st.rerun()
 
 
@@ -395,9 +397,9 @@ def modulo_geometria_castillo():
         st.session_state.ultima_mision = mision
     if st.session_state.ultima_mision != mision:
         st.session_state.ultima_mision = mision
-        if 'pregunta_geo' in st.session_state: del st.session_state.pregunta_geo
-        if 'pregunta_area' in st.session_state: del st.session_state.pregunta_area
-        if 'pregunta_pit' in st.session_state: del st.session_state.pregunta_pit
+        st.session_state.pop('pregunta_geo', None)
+        st.session_state.pop('pregunta_area', None)
+        st.session_state.pop('pregunta_pit', None)
         st.rerun()
 
     if mision == "Misión 1: La Muralla (Perímetros)":
@@ -462,7 +464,7 @@ def modulo_geometria_castillo():
                 st.error("Tu conteo falló. Suma con cuidado las 6 paredes.")
 
         if st.button("🔄 Cambiar de Castillo"):
-            if 'pregunta_geo' in st.session_state: del st.session_state.pregunta_geo
+            st.session_state.pop('pregunta_geo', None)
             st.rerun()
 
     elif mision == "Misión 2: El Patio de Armas (Áreas)":
@@ -502,7 +504,7 @@ def modulo_geometria_castillo():
                 problema = f"La plaza central es un **hexágono regular**. Cada lado mide {lado}m y su Apotema es de {apotema}m.<br>⚡ <i>Estrategia: Saca la orilla total ({lado} × 6), multiplícala por el apotema y divide entre 2.</i>"
                 datos = (lado, apotema, perimetro)
 
-            st.session_state.pregunta_area = {"tipo": tipo_patio, "prob": problema, "total": area, "datos": datos}
+            st.session_state.pregunta_area = {"tipo": tipo_patio, "prob": समस्या, "total": area, "datos": datos}
 
         a = st.session_state.pregunta_area
         st.markdown(f"<div style='background-color: rgba(168,85,247,0.1); padding:15px; border-radius:8px; border-left:5px solid #a855f7;'>📋 <b>Reto:</b> {a['prob']}</div>", unsafe_allow_html=True)
@@ -578,10 +580,10 @@ def modulo_geometria_castillo():
                 st.success(f"¡LOGRADO! El área calculada es de {a['total']} metros cuadrados.")
                 st.balloons()
             else: 
-                st.error(f"La cuenta falló. Revisa la estrategia para aplicar los pasos correctos.")
+                st.error("La cuenta falló. Revisa la estrategia para aplicar los pasos correctos.")
 
         if st.button("🔄 Cambiar de Terreno"):
-            if 'pregunta_area' in st.session_state: del st.session_state.pregunta_area
+            st.session_state.pop('pregunta_area', None)
             st.rerun()
 
     else:
@@ -631,8 +633,135 @@ def modulo_geometria_castillo():
                 st.error("La escalera quedó corta o colapsó. Intenta sumando los dos resultados del acordeón gris.")
 
         if st.button("🔄 Cambiar de Torre"):
-            if 'pregunta_pit' in st.session_state: del st.session_state.pregunta_pit
+            st.session_state.pop('pregunta_pit', None)
             st.rerun()
+
+
+# =====================================================================
+# 6. NUEVO AUXILIAR Y MÓDULO: EL TALLER DE ESCUDOS (Fracciones)
+# =====================================================================
+def generar_svg_escudo(cortes, pintados, color_pintado="#ef4444"):
+    svg_ancho, svg_alto = 200, 200
+    centro_x, centro_y, radio = 100, 100, 80
+    svg = f"""
+    <svg width="{svg_ancho}" height="{svg_alto}" viewBox="0 0 {svg_ancho} {svg_alto}" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 50%;">
+        <circle cx="{centro_x}" cy="{centro_y}" r="{radio}" fill="#475569" stroke="#94a3b8" stroke-width="4"/>
+    """
+    if cortes == 1:
+        color_fill = color_pintado if pintados == 1 else "#475569"
+        svg += f'<circle cx="{centro_x}" cy="{centro_y}" r="{radio}" fill="{color_fill}" stroke="#94a3b8" stroke-width="4"/>'
+    else:
+        for i in range(cortes):
+            angulo_inicio = (2 * math.pi / cortes) * i - math.pi / 2
+            angulo_fin = (2 * math.pi / cortes) * (i + 1) - math.pi / 2
+            x1 = centro_x + radio * math.cos(angulo_inicio)
+            y1 = centro_y + radio * math.sin(angulo_inicio)
+            x2 = centro_x + radio * math.cos(angulo_fin)
+            y2 = centro_y + radio * math.sin(angulo_fin)
+            fill_actual = color_pintado if i < pintados else "#475569"
+            svg += f'<path d="M {centro_x} {centro_y} L {x1} {y1} A {radio} {radio} 0 0 1 {x2} {y2} Z" fill="{fill_actual}" stroke="#1e293b" stroke-width="2"/>'
+    svg += f"""
+        <circle cx="{centro_x}" cy="{centro_y}" r="{radio}" fill="none" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="6,4"/>
+    </svg>
+    """
+    return svg
+
+def modulo_fracciones_final():
+    st.title("🛡️ El Taller de Escudos (Fracciones)")
+    
+    sub_tema = st.radio(
+        "Selecciona tu entrenamiento:",
+        ["Los Escudos del Rey (Equivalencia)", "El Escribano Real (Simplificación)"],
+        horizontal=True
+    )
+    st.divider()
+
+    if sub_tema == "Los Escudos del Rey (Equivalencia)":
+        st.markdown("""
+        ### 🎨 Fracciones Equivalentes
+        Imagina que el Rey manda pintar de **rojo** la mitad de los escudos del ejército. 
+        No importa si cortas el escudo en **2 pedazos grandes** o en **8 cachitos pequeños**, ¡la cantidad de pintura final es exactamente la misma!
+        """)
+        tab_explicacion, tab_reto = st.tabs(["📖 Ver la regla visual", "🎯 ¡Pruébalo tú mismo!"])
+        
+        with tab_explicacion:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.markdown("<center><b>1 / 2</b></center>", unsafe_allow_html=True)
+                components.html(f"<center>{generar_svg_escudo(2, 1)}</center>", height=210)
+            with col2:
+                st.markdown("<center><b>2 / 4</b></center>", unsafe_allow_html=True)
+                components.html(f"<center>{generar_svg_escudo(4, 2)}</center>", height=210)
+            with col3:
+                st.markdown("<center><b>4 / 8</b></center>", unsafe_allow_html=True)
+                components.html(f"<center>{generar_svg_escudo(8, 4)}</center>", height=210)
+
+        with tab_reto:
+            banco_equivalencias = [
+                {"base_c": 3, "base_p": 1, "texto": "1/3 de un escudo de Amatista", "color": "#a855f7"},
+                {"base_c": 4, "base_p": 3, "texto": "3/4 de un escudo de Esmeralda", "color": "#10b981"},
+                {"base_c": 5, "base_p": 2, "texto": "2/5 de un escudo de Oro Real", "color": "#f59e0b"}
+            ]
+            if 'reto_equiv' not in st.session_state:
+                st.session_state.reto_equiv = random.choice(banco_equivalencias)
+                st.session_state.v_equiv = 1
+                
+            req = st.session_state.reto_equiv
+            st.write(f"Crea una fracción equivalente a: **{req['texto']}**")
+            
+            c_plano, c_usuario = st.columns(2)
+            with c_plano:
+                components.html(f"<center>{generar_svg_escudo(req['base_c'], req['base_p'], req['color'])}</center>", height=210)
+            with c_usuario:
+                num_cortes = st.slider("¿Partes totales?", 1, 20, 6, key=f"sld_c_{st.session_state.v_equiv}")
+                num_pintados = st.slider("¿Partes pintadas?", 0, num_cortes, 1, key=f"sld_p_{st.session_state.v_equiv}")
+                components.html(f"<center>{generar_svg_escudo(num_cortes, num_pintados, req['color'])}</center>", height=210)
+                
+            with st.form(key=f"form_equiv_{st.session_state.v_equiv}"):
+                submit_eq = st.form_submit_button("⚔️ Presentar Escudo")
+                if submit_eq:
+                    if num_pintados * req['base_c'] == num_cortes * req['base_p'] and num_cortes != req['base_c']:
+                        st.success("¡FORJA PERFECTA!")
+                        st.balloons()
+                    else:
+                        st.error("No es equivalente o usaste el mismo tamaño de cortes.")
+
+            if st.button("🔄 Nuevo Reto Equivalencia"):
+                st.session_state.reto_equiv = random.choice([b for b in banco_equivalencias if b['texto'] != req['texto']])
+                st.session_state.v_equiv += 1
+                st.rerun()
+
+    elif sub_tema == "El Escribano Real (Simplificación)":
+        st.markdown("### 📝 Simplificar Fracciones")
+        tab_explicacion, tab_reto = st.tabs(["📖 Ver ejemplo", "🎯 ¡Pruébalo tú mismo!"])
+        
+        with tab_reto:
+            banco_simplificar = [
+                {"original_p": 6, "original_c": 18, "ans_p": 1, "ans_c": 3},
+                {"original_p": 8, "original_c": 12, "ans_p": 2, "ans_c": 3}
+            ]
+            if 'reto_simp' not in st.session_state:
+                st.session_state.reto_simp = random.choice(banco_simplificar)
+                st.session_state.v_simp = 1
+                
+            simp = st.session_state.reto_simp
+            st.warning(f"Simplifica al máximo la fracción: **{simp['original_p']}/{simp['original_c']}**")
+            components.html(f"<center>{generar_svg_escudo(simp['original_c'], simp['original_p'], '#38bdf8')}</center>", height=210)
+            
+            with st.form(key=f"form_simp_{st.session_state.v_simp}"):
+                user_p = st.number_input("Numerador (Arriba)", step=1, value=None)
+                user_c = st.number_input("Denominador (Abajo)", step=1, value=None)
+                if st.form_submit_button("✒️ Sellar Registro"):
+                    if user_p == simp['ans_p'] and user_c == simp['ans_c']:
+                        st.success("¡Mínima expresión correcta!")
+                        st.balloons()
+                    else:
+                        st.error("Aún no es la mínima expresión.")
+                        
+            if st.button("🔄 Siguiente Pergamino"):
+                st.session_state.reto_simp = random.choice([b for b in banco_simplificar if b['original_c'] != simp['original_c']])
+                st.session_state.v_simp += 1
+                st.rerun()
 
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
@@ -641,12 +770,13 @@ lista_temas = [
     "La Forja (Potencias y Raíces)", 
     "Leyes del Trono (Jerarquía Básica)",
     "Asalto a Fortalezas (Agrupación)",
+    "Reglas del Reino (MCM y MCD)",  # Actualizado el nombre visual
+    "Fracciones (Fase 1)",           # Nuevo tema
     "Sistemas 2x2",
     "Estadística",
     "Magia del Punto",
     "Porcentajes Combinados",
     "Regla de Tres",
-    "Reglas del Reino (mcm y MCD)",
     "Geometría"
 ]
 
@@ -709,8 +839,9 @@ elif seleccion_final == "Porcentajes Combinados":
     modulo_combinados_streamlit()
 elif seleccion_final == "Regla de Tres": 
     modulo_regla_de_tres()
-elif seleccion_final == "Reglas del Reino (mcm y MCD)":  # <-- Movido aquí
-    from animacion_divisibilidad import modulo_divisibilidad_streamlit
+elif seleccion_final == "Reglas del Reino (MCM y MCD)":
     modulo_divisibilidad_streamlit()
-else:  # <-- El else ahora sí queda al final de todo
+elif seleccion_final == "Fracciones (Fase 1)":  # <-- Renderizado seguro
+    modulo_fracciones_final()
+else: 
     modulo_geometria_castillo()
