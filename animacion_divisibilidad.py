@@ -96,8 +96,8 @@ def modulo_divisibilidad_streamlit():
             """)
 
         with tab_reto:
-            if 'datos_mcd' not in st.session_state:
-                # Nivel Examen: Desafío masivo con 4 números simultáneos
+            # Inicialización correcta como diccionario para nivel examen
+            if 'datos_mcd' not in st.session_state or not isinstance(st.session_state.datos_mcd, dict):
                 st.session_state.datos_mcd = {
                     "oro": 36,
                     "plata": 48,
@@ -105,6 +105,7 @@ def modulo_divisibilidad_streamlit():
                     "pergaminos": 72
                 }
 
+            # Asignamos el diccionario a una variable corta 'd'
             d = st.session_state.datos_mcd
 
             st.warning(f"""
