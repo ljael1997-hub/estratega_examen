@@ -34,46 +34,54 @@ def modulo_divisibilidad_streamlit():
             """)
             
         with tab_reto:
-            if 'datos_mcm' not in st.session_state:
-                # Nivel Examen: Introducimos una terna con un MCM más elevado (8, 12, 15)
-                st.session_state.datos_mcm = (8, 12, 15)
+            if 'game_id_mcm' not in st.session_state:
+                st.session_state.game_id_mcm = 0
                 
-            t1, t2, t3 = st.session_state.datos_mcm
+            gid_mcm = st.session_state.game_id_mcm
+            
+            # UNIFICADO: Valores fijos de nivel examen para el reto
+            t1, t2, t3 = 8, 12, 15
             
             st.info(f"""
-            🏰 **Misión del Reino (Dificultad de Examen):** Para evitar que el castillo quede a oscuras, los vigías cambian sus antorchas en intervalos más complejos:
+            城堡 **Misión del Reino (Dificultad de Examen):** Para evitar que el castillo quede a oscuras, los vigías cambian sus antorchas en intervalos complejos:
             * 🎯 **Torre Norte:** Cada **{t1}** horas.
             * 🎯 **Torre Sur:** Cada **{t2}** horas.
             * 🎯 **Torre Este:** Cada **{t3}** horas.
             """)
 
-            # Contenedor visual estable adaptado a números más grandes
+            # UNIFICADO: Pistas visuales corregidas para la serie de 8, 12 y 15
             html_linea_tiempo = f"""
             <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; color: white; border: 2px solid #475569;">
                 <div style="color: #60a5fa; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; text-align: center;">⏳ Línea de Tiempo de las Torres</div>
                 <div style="text-align: left; font-size: 13px; color: #94a3b8; line-height: 24px;">
-                    • <b>Torre Norte ({t1}h):</b> {t1}, {t1*2}, {t1*3}, {t1*4}, {t1*5}, {t1*6}, {t1*7}, {t1*8}, {t1*9}, {t1*10}, ... <br>
-                    • <b>Torre Sur ({t2}h):</b> {t2}, {t2*2}, {t2*3}, {t2*4}, {t2*5}, {t2*6}, {t2*7}, {t2*8}, {t2*9}, {t2*10}, ... <br>
-                    • <b>Torre Este ({t3}h):</b> {t3}, {t3*2}, {t3*3}, {t3*4}, {t3*5}, {t3*6}, {t3*7}, {t3*8}, {t3*9}, {t3*10}, ... <br>
+                    • <b>Torre Norte ({t1}h):</b> {t1}, {t1*2}, {t1*3}, {t1*4}, ... ❓ ... <br>
+                    • <b>Torre Sur ({t2}h):</b> {t2}, {t2*2}, {t2*3}, {t2*4}, ... ❓ ... <br>
+                    • <b>Torre Este ({t3}h):</b> {t3}, {t3*2}, {t3*3}, {t3*4}, ... ❓ ... <br>
                 </div>
                 <div style="margin-top: 12px; padding: 6px; background: rgba(0,0,0,0.2); font-size: 12px; color: #f59e0b; text-align: center; border-radius: 4px;">
-                    💡 <i>Estrategia: Desarrolla las tablas un poco más allá del 100 o usa la descomposición en factores primos.</i>
+                    💡 <i>Estrategia: Desarrolla las tres secuencias en tu cuaderno hasta encontrar el primer número en el que choquen las tres torres (pista: pasa del 100).</i>
                 </div>
             </div>
             """
             components.html(html_linea_tiempo, height=185)
             
-            user_mcm = st.number_input("¿En cuántas horas volverán a coincidir todos los vigías?", step=1, value=None, placeholder="Encuentra el MCM de 8, 12 y 15")
+            user_mcm = st.number_input("¿En cuántas horas volverán a coincidir todos los vigías?", step=1, value=None, key=f"inp_mcm_{gid_mcm}", placeholder="Encuentra el MCM de 8, 12 y 15")
             
-            if st.button("🔏 Sellar Guardia (Verificar)"):
-                if user_mcm is not None:
-                    if user_mcm == 120: # MCM exacto de 8, 12, 15
-                        st.success("¡VÍCTORIA! A las 120 horas todas las antorchas coinciden. Has blindado el castillo.")
-                        st.balloons()
+            col_eval_mcm, col_next_mcm = st.columns(2)
+            with col_eval_mcm:
+                if st.button("🔏 Sellar Guardia (Verificar)", use_container_width=True):
+                    if user_mcm is not None:
+                        if user_mcm == 120: 
+                            st.success("¡VICTORIA! A las 120 horas todas las antorchas coinciden. Has blindado el castillo.")
+                            st.balloons()
+                        else:
+                            st.error(f"A las {user_mcm} horas no coinciden todos los vigías. Sigue buscando el primer múltiplo común real.")
                     else:
-                        st.error(f"A las {user_mcm} horas no coinciden todos los vigías. Sigue buscando el primer múltiplo común real.")
-                else:
-                    st.warning("Por favor, introduce un número antes de verificar.")
+                        st.warning("Por favor, introduce un número antes de verificar.")
+            with col_next_mcm:
+                if st.button("🔄 Nuevas Antorchas", use_container_width=True):
+                    st.session_state.game_id_mcm += 1
+                    st.rerun()
 
     elif sub_tema == "El Reparto Justo del Botín (MCD)":
         st.markdown("""
@@ -96,17 +104,13 @@ def modulo_divisibilidad_streamlit():
             """)
 
         with tab_reto:
-            # Inicialización correcta como diccionario para nivel examen
-            if 'datos_mcd' not in st.session_state or not isinstance(st.session_state.datos_mcd, dict):
-                st.session_state.datos_mcd = {
-                    "oro": 36,
-                    "plata": 48,
-                    "gemas": 60,
-                    "pergaminos": 72
-                }
+            if 'game_id_mcd' not in st.session_state:
+                st.session_state.game_id_mcd = 0
+                
+            gid_mcd = st.session_state.game_id_mcd
 
-            # Asignamos el diccionario a una variable corta 'd'
-            d = st.session_state.datos_mcd
+            # Valores del reto de 4 elementos
+            d = {"oro": 36, "plata": 48, "gemas": 60, "pergaminos": 72}
 
             st.warning(f"""
             💰 **Bóveda del Tesoro Real (4 Elementos):** Los cofres deben contener piezas de:
@@ -118,28 +122,34 @@ def modulo_divisibilidad_streamlit():
 
             html_fraccionamiento = f"""
             <div style="background-color: #1e293b; padding: 15px; border-radius: 12px; font-family: 'Segoe UI', sans-serif; color: white; border: 2px solid #475569;">
-                <div style="color: #a855f7; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; text-align: center;">📐 Regla de Fraccionamiento Real</div>
-                <div style="text-align: left; font-size: 13px; color: #94a3b8; line-height: 22px;">
-                    • Divisores de <b>Oro ({d['oro']})</b>: 1, 2, 3, 4, 6, 9, <b>12</b>, 18, 36.<br>
-                    • Divisores de <b>Plata ({d['plata']})</b>: 1, 2, 3, 4, 6, 8, <b>12</b>, 16, 24, 48.<br>
-                    • Divisores de <b>Gemas ({d['gemas']})</b>: 1, 2, 3, 4, 5, 6, 10, <b>12</b>, 15, 20, 30, 60.<br>
-                    • Divisores de <b>Pergaminos ({d['pergaminos']})</b>: 1, 2, 3, 4, 6, 8, 9, <b>12</b>, 18, 24, 36, 72.<br>
+                <div style="color: #a855f7; font-weight: bold; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; text-align: center;">📐 Mapa de Pistas de Fraccionamiento</div>
+                <div style="text-align: left; font-size: 13px; color: #94a3b8; line-height: 24px;">
+                    • ¿Se pueden dividir entre <b>2</b>? Todos terminan en número par... (¡Sí! En cada uno cabe) <br>
+                    • ¿Se pueden dividir entre <b>3</b>? Si sumas sus dígitos, todos dan múltiplos de 3... (¡Sí!) <br>
+                    • ¿Habrá un número <b>más grande</b> (MÁXIMO) que divida a los cuatro sin dejar residuo? 📦 <b>[ ❓ ]</b>
                 </div>
                 <div style="margin-top: 12px; padding: 5px; background: rgba(0,0,0,0.2); font-size: 12px; color: #f59e0b; text-align: center; border-radius: 4px;">
-                    💡 <i>¿Cuál es el divisor común más grande que comparten los 4 recursos a la vez?</i>
+                    💡 <i>Estrategia: Busca el número más grande que pueda dividir exactamente a 36, 48, 60 y 72 al mismo tiempo.</i>
                 </div>
             </div>
             """
-            components.html(html_fraccionamiento, height=215)
+            components.html(html_fraccionamiento, height=195)
 
-            user_mcd = st.number_input("¿Cuál es el número máximo de cofres iguales que puedes armar?", step=1, value=None, placeholder="Encuentra el MCD de 36, 48, 60 y 72")
+            user_mcd = st.number_input("¿Cuál es el número máximo de cofres iguales que puedes armar?", step=1, value=None, key=f"inp_mcd_{gid_mcd}", placeholder="Encuentra el MCD de 36, 48, 60 y 72")
 
-            if st.button("👑 Distribuir Botín"):
-                if user_mcd is not None:
-                    if user_mcd == 12: # MCD exacto de 36, 48, 60, 72
-                        st.success(f"¡LOGRADO! Armaste un máximo de 12 cofres perfectos (cada uno con {d['oro']//12} de oro, {d['plata']//12} de plata, {d['gemas']//12} gemas y {d['pergaminos']//12} pergaminos).")
-                        st.balloons()
+            # CORREGIDO: Columnas de acción agregadas con botón para reiniciar ejercicio
+            col_eval_mcd, col_next_mcd = st.columns(2)
+            with col_eval_mcd:
+                if st.button("👑 Distribuir Botín", use_container_width=True):
+                    if user_mcd is not None:
+                        if user_mcd == 12: 
+                            st.success(f"¡LOGRADO! Armaste un máximo de 12 cofres perfectos (cada uno con {d['oro']//12} de oro, {d['plata']//12} de plata, {d['gemas']//12} gemas y {d['pergaminos']//12} pergaminos).")
+                            st.balloons()
+                        else:
+                            st.error("Ese número de divisiones no reparte los 4 recursos de forma exacta o no es el divisor máximo común.")
                     else:
-                        st.error("Ese número de divisiones no reparte los 4 recursos de forma exacta o no es el divisor máximo común.")
-                else:
-                    st.warning("Por favor, introduce un número antes de verificar.")
+                        st.warning("Por favor, introduce un número antes de verificar.")
+            with col_next_mcd:
+                if st.button("🔄 Nuevo Botín", use_container_width=True):
+                    st.session_state.game_id_mcd += 1
+                    st.rerun()
