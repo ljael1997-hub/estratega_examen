@@ -684,6 +684,12 @@ def modulo_potencias_basicas():
         st.success(f"¡Listo! {base} multiplicado {exponente} veces es: **{resultado}**")
         
     st.info("💡 **Tip:** Si ves 4³, no multipliques 4 por 3. ¡Es una orden de repetir el 4, tres veces!")
+ # 2. Diccionario / Nota de referencia (siempre visible)
+    st.info(f"""
+    **Referencia de examen:**
+    En tu hoja verás: {base}<sup>{exp1}</sup> × {base}<sup>{exp2}</sup>
+    Esto equivale a: `{base}^{exp1} * {base}^{exp2}`
+    """)
 
 # --- MÓDULO: POTENCIAS LEYES ---
 def modulo_potencias_leyes():
@@ -752,8 +758,8 @@ with st.sidebar:
         * **20 / 4** o **20 ÷ 4** -> Repartir 20 cosas entre 4 personas en partes iguales.
         
         **⏹️ Elevar al Cuadrado (²):**
-        * **$5^2$** -> Es multiplicar el número **por sí mismo** ($5 \\times 5 = 25$). 
-        * *Visualmente:* Si haces un piso cuadrado de $5 \\times 5$ bloques, usarás $25$ bloques en total.
+        * **$5^2$** es lo mismo que escribir **5^2** en la computadora.
+        * Es multiplicar el número **por sí mismo** ($5 \times 5 = 25$).
         
         **🌱 Raíz Cuadrada (√):**
         * **$\\sqrt{25}$** -> Es la operación al revés. Si te dan un piso cuadrado de $25$ bloques y te preguntan: *¿Cuánto mide su pared de largo?*, la respuesta es $5$.
