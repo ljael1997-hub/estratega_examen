@@ -5,7 +5,7 @@ import random
 def generar_svg_lingote(cortes, pintados, color_pintado="#f59e0b"):
     """
     Genera un lingote rectangular en SVG dividido en 'cortes' bloques verticales,
-    donde 'pintados' bloques se rellenan con color y el resto se quedan vacíos.
+    donde 'pintados' bloques se rellenan con color y el resto se quedan vacías.
     Diseñado para ser perfectamente responsivo y ultra legible.
     """
     ancho_total = 300
@@ -23,7 +23,6 @@ def generar_svg_lingote(cortes, pintados, color_pintado="#f59e0b"):
     # Dibujar cada uno de los bloques individuales
     for i in range(cortes):
         x_pos = i * ancho_bloque
-        # Si el bloque actual está dentro de los pintados, usa el color brillante; si no, el gris oscuro
         fill_actual = color_pintado if i < pintados else "#475569"
         
         svg += f"""
@@ -31,7 +30,7 @@ def generar_svg_lingote(cortes, pintados, color_pintado="#f59e0b"):
               fill="{fill_actual}" stroke="#1e293b" stroke-width="2"/>
         """
         
-    # Detalles estéticos: un brillo metálico superior para que parezca un lingote o gema
+    # Detalles estéticos: brillo metálico superior
     svg += f"""
         <rect x="2" y="2" width="{ancho_total - 4}" height="6" fill="white" opacity="0.15" rx="3"/>
     </svg>
@@ -44,11 +43,12 @@ def modulo_fracciones_streamlit():
     sub_tema = st.radio(
         "Selecciona tu entrenamiento:",
         ["Los Lingotes del Rey (Equivalencia)", "El Escribano Real (Simplificación)"],
-        horizontal=True
+        horizontal=True,
+        key="radio_subtemas_principal"
     )
     st.divider()
 
-    # --- 1. SUB-TEMA: EQUIVALENCIA (REDISEÑADO CON RECTÁNGULOS) ---
+    # --- 1. SUB-TEMA: EQUIVALENCIA ---
     if sub_tema == "Los Lingotes del Rey (Equivalencia)":
         st.markdown("""
         ### 🎨 Lingotes Equivalentes
@@ -91,7 +91,7 @@ def modulo_fracciones_streamlit():
             num_cortes = req['base_c'] * factor
             gid = st.session_state.v_equiv
             
-            st.markdown(f"#### 🎯 Tu Misión: Fundir un lingote equivalente")
+            st.markdown(f"#### 🎯 Tu Misión: Fundir un lingote管 equivalente")
             st.write(f"El maestro fundidor te pide replicar el plano original: **{req['texto']}**.")
             
             if factor == 2:
@@ -99,32 +99,32 @@ def modulo_fracciones_streamlit():
             else:
                 st.info(f"⚖️ **Orden de la Fragua:** Tu nuevo lingote debe estar dividido en el **triple** de secciones ({num_cortes} bloques totales). ¡Ajusta el material pintado para que mida lo mismo!")
 
-            # Despliegue de los lingotes uno arriba del otro para comparación visual perfecta
             st.markdown(f"**📐 Plano Original de Referencia ({req['base_p']}/{req['base_c']})**")
             st.components.v1.html(generar_svg_lingote(req['base_c'], req['base_p'], req['color']), height=70)
             
             st.markdown(f"**🔨 Tu Fundición Actual ({num_cortes} bloques totales)**")
-            num_pintados = st.slider("Mueve el deslizador para pintar los bloques de color:", min_value=0, max_value=num_cortes, value=1, key=f"pintados_rect_{gid}")
+            # SOLUCIÓN KEY: Llave totalmente única añadiendo el prefijo equiv_ para que no choque
+            num_pintados = st.slider("Mueve el deslizador para pintar los bloques de color:", min_value=0, max_value=num_cortes, value=1, key=f"slider_equiv_pintados_{gid}")
             st.components.v1.html(generar_svg_lingote(num_cortes, num_pintados, req['color']), height=70)
                 
-            with st.form(key=f"form_equiv_rect_{gid}"):
+            with st.form(key=f"form_equiv_rect_fixed_{gid}"):
                 st.write(f"Tu lingote actual representa la proporción: **{num_pintados} / {num_cortes}**")
                 submit_eq = st.form_submit_button("⚔️ Entregar Lingote a los Almacenes")
                 
                 if submit_eq:
                     if num_pintados * req['base_c'] == num_cortes * req['base_p']:
-                        st.success(f"¡FRIGIDOR PERFECTO! Has alineado el material exactamente igual. La proporción {num_pintados}/{num_cortes} es equivalente a {req['base_p']}/{req['base_c']}.")
+                        st.success(f"¡FORJA PERFECTA! Has alineado el material exactamente igual. La proporción {num_pintados}/{num_cortes} es equivalente a {req['base_p']}/{req['base_c']}.")
                         st.balloons()
                     else:
                         st.error("¡No coincide! Mira las barras: tu lingote es más corto o más largo que el plano original.")
                         
-            if st.button("🔄 Siguiente Plano (Nuevo Reto)", key="btn_new_eq"):
+            if st.button("🔄 Siguiente Plano (Nuevo Reto)", key="btn_new_eq_unique"):
                 st.session_state.reto_equiv = random.choice([b for b in banco_equivalencias if b['texto'] != req['texto']])
                 st.session_state.multiplicador = random.choice([2, 3])
                 st.session_state.v_equiv += 1
                 st.rerun()
 
-    # --- 2. SUB-TEMA: SIMPLIFICACIÓN (CON RECTÁNGULOS Y MEJORAS ESTÉTICAS) ---
+    # --- 2. SUB-TEMA: SIMPLIFICACIÓN ---
     elif sub_tema == "El Escribano Real (Simplificación)":
         st.markdown("""
         ### 📝 Simplificar Fracciones
@@ -135,12 +135,11 @@ def modulo_fracciones_streamlit():
         
         with tab_explicacion:
             st.markdown("#### Compactando el material")
-            st.markdown("❌ <b>4 / 12</b> (Demasiado fragmentado y difícil de leer)")
+            st.markdown("❌ <b>4 / 12</b> (Demasiado fragmentado)")
             st.components.v1.html(generar_svg_lingote(12, 4, "#38bdf8"), height=70)
             
-            st.markdown("✅ <b>1 / 3</b> (Simplificado al máximo, misma cantidad física)")
+            st.markdown("✅ <b>1 / 3</b> (Simplificado al máximo)")
             st.components.v1.html(generar_svg_lingote(3, 1, "#38bdf8"), height=70)
-            st.info("💡 **¿Cómo se hace?** Dividimos arriba y abajo entre 4. Pasamos de 12 pedacitos a solo 3 bloques grandes.")
 
         with tab_reto:
             banco_simplificar = [
@@ -159,7 +158,6 @@ def modulo_fracciones_streamlit():
             simp = st.session_state.reto_simp
             vsmp = st.session_state.v_simp
             
-            # Cuadro amarillo formal ultra gigante con tipografía monospace resaltada
             html_alerta_gigante = f"""
             <div style="background-color: #fef08a; border-left: 8px solid #eab308; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <p style="color: #854d0e; font-size: 18px; margin: 0; font-family: sans-serif;">
@@ -174,14 +172,14 @@ def modulo_fracciones_streamlit():
             
             st.components.v1.html(generar_svg_lingote(simp['original_c'], simp['original_p'], '#38bdf8'), height=70)
             
-            with st.form(key=f"form_simp_rect_{vsmp}"):
+            with st.form(key=f"form_simp_rect_fixed_{vsmp}"):
                 st.write("Escribe los números de la fracción completamente simplificada:")
                 col_inp1, col_inp2 = st.columns(2)
                 
                 with col_inp1:
-                    user_p_str = st.text_input("Numerador (Arriba)", key=f"inp_p_{vsmp}", placeholder="Ej: 1")
+                    user_p_str = st.text_input("Numerador (Arriba)", key=f"text_simp_p_{vsmp}", placeholder="Ej: 1")
                 with col_inp2:
-                    user_c_str = st.text_input("Denominador (Abajo)", key=f"inp_c_{vsmp}", placeholder="Ej: 3")
+                    user_c_str = st.text_input("Denominador (Abajo)", key=f"text_simp_c_{vsmp}", placeholder="Ej: 3")
                     
                 submit_simp = st.form_submit_button("✒️ Sellar Registro Oficial")
                 
@@ -215,7 +213,7 @@ def modulo_fracciones_streamlit():
                 st.markdown(html_cuadro_matematico, unsafe_allow_html=True)
                 st.latex(r"\frac{" + str(simp['ans_p']) + r"}{" + str(simp['ans_c']) + r"}")
                         
-            if st.button("🔄 Siguiente Pergamino", key="btn_new_simp"):
+            if st.button("🔄 Siguiente Pergamino", key="btn_new_simp_unique"):
                 st.session_state.reto_simp = random.choice([b for b in banco_simplificar if b['original_c'] != simp['original_c'] or b['original_p'] != simp['original_p']])
                 st.session_state.v_simp += 1
                 st.session_state.completado_simp = False
