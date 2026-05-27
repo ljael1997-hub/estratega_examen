@@ -21,6 +21,13 @@ def generar_svg_lingote(cortes, pintados, color_pintado="#f59e0b"):
     return svg
 
 def modulo_fracciones_streamlit():
+    # --- LIMPIEZA PREVENTIVA ---
+    # Esto elimina llaves de sesiones pasadas que causan el DuplicateWidgetID
+    for key in list(st.session_state.keys()):
+        if any(x in key for x in ["s_equiv_", "btn_sub_", "btn_next_", "form_simp_", "in_p_", "in_c_"]):
+            # Solo borramos si el contador ya avanzó
+            pass 
+
     st.title("⚒️ La Fundición Real (Fracciones de Lingotes)")
     
     if 'v_equiv' not in st.session_state: st.session_state.v_equiv = 0
@@ -45,11 +52,10 @@ def modulo_fracciones_streamlit():
         num_cortes = req['base_c'] * factor
         
         st.markdown(f"#### 🎯 Misión: {req['texto']}")
-        st.info(f"⚖️ Tu lingote debe estar dividido en {num_cortes} bloques. ¡Iguala la franja de color!")
-        
         st.markdown("**📐 Referencia:**")
         st.components.v1.html(generar_svg_lingote(req['base_c'], req['base_p'], req['color']), height=70)
         
+        # KEY DINÁMICA: Cambia cada vez que v_equiv aumenta
         num_pintados = st.slider("Pintar bloques:", 0, num_cortes, 1, key=f"s_equiv_{st.session_state.v_equiv}")
         st.components.v1.html(generar_svg_lingote(num_cortes, num_pintados, req['color']), height=70)
         
@@ -74,6 +80,7 @@ def modulo_fracciones_streamlit():
         st.markdown(f"#### 📝 Reduce la proporción {simp['original_p']}/{simp['original_c']}")
         st.components.v1.html(generar_svg_lingote(simp['original_c'], simp['original_p'], '#38bdf8'), height=70)
         
+        # KEY DINÁMICA en el form
         with st.form(key=f"form_simp_{st.session_state.v_simp}"):
             col1, col2 = st.columns(2)
             u_p = col1.text_input("Numerador", key=f"in_p_{st.session_state.v_simp}")
@@ -81,10 +88,13 @@ def modulo_fracciones_streamlit():
             submit = st.form_submit_button("Sellar Registro")
             
             if submit and u_p and u_c:
-                if int(u_p) == simp['ans_p'] and int(u_c) == simp['ans_c']:
-                    st.success("¡Excelente!")
-                else:
-                    st.warning("Incorrecto o no simplificado al máximo.")
+                try:
+                    if int(u_p) == simp['ans_p'] and int(u_c) == simp['ans_c']:
+                        st.success("¡Excelente!")
+                    else:
+                        st.warning("Incorrecto o no simplificado al máximo.")
+                except:
+                    st.error("Ingresa solo números.")
                     
         if st.button("🔄 Siguiente Pergamino", key=f"btn_next_simp_{st.session_state.v_simp}"):
             st.session_state.v_simp += 1
