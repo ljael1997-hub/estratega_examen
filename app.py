@@ -100,19 +100,16 @@ def modulo_sacos():
         with col1:
             st.subheader(TEXTO_POS)
             st.text_input("Anota los positivos aquí:", key=f"txt_v_{gid}", placeholder="Ej: +5 +10")
-            # Cambiado a text_input para escritura puramente manual sin botones de +/-
             user_verde_str = st.text_input("¿Cuánto dinero tienes en total?", key=f"num_v_{gid}", placeholder="Suma los positivos")
             
         with col2:
             st.subheader(TEXTO_NEG)
             st.text_input("Anota los negativos aquí:", key=f"txt_r_{gid}", placeholder="Ej: -8 -4")
-            # Cambiado a text_input para escritura puramente manual sin botones de +/-
             user_rojo_str = st.text_input("¿Cuánto debes en total? (Usa el signo -)", key=f"num_r_{gid}", placeholder="Suma los negativos")
         
         btn_revisar = st.form_submit_button("💰 Revisar mis Sacos")
         
         if btn_revisar:
-            # Procesamos las entradas manuales y las convertimos a números de forma segura
             try:
                 if user_verde_str.strip() == "" or user_rojo_str.strip() == "":
                     st.warning("⚠️ Por favor, llena ambos totales antes de revisar.")
@@ -137,7 +134,6 @@ def modulo_sacos():
         res_final = sum(soldados)
         
         with st.form(key=f"form_sacos_p2_{gid}"):
-            # También cambiamos la respuesta final a entrada de texto manual interactiva
             user_final_str = st.text_input("¿Cuánto dinero te queda al final? (Pon el signo si es negativo)", key=f"final_{gid}", placeholder="Ej: 5 o -3")
             btn_duelo = st.form_submit_button("🏟️ ¡Ejecutar Duelo Final!")
             
@@ -420,7 +416,7 @@ def modulo_geometria_castillo():
     )
     st.divider()
 
-    # --- BUGFIX: Limpiar estados cruzados al cambiar de sub-misión ---
+    # BUGFIX: Limpiar estados cruzados al cambiar de sub-misión
     if "ultima_mision" not in st.session_state:
         st.session_state.ultima_mision = mision
     if st.session_state.ultima_mision != mision:
@@ -665,159 +661,6 @@ def modulo_geometria_castillo():
             st.rerun()
 
 
-# =====================================================================
-# 6. AUXILIAR Y MÓDULO: EL TALLER DE ESCUDOS (Fracciones)
-# =====================================================================
-def generar_svg_escudo(cortes, pintados, color_pintado="#ef4444"):
-    svg_ancho, svg_alto = 200, 200
-    centro_x, centro_y, radio = 100, 100, 80
-    svg = f"""
-    <svg width="{svg_ancho}" height="{svg_alto}" viewBox="0 0 {svg_ancho} {svg_alto}" xmlns="http://www.w3.org/2000/svg" style="background-color: #1e293b; border-radius: 50%;">
-        <circle cx="{centro_x}" cy="{centro_y}" r="{radio}" fill="#475569" stroke="#94a3b8" stroke-width="4"/>
-    """
-    if cortes == 1:
-        color_fill = color_pintado if pintados == 1 else "#475569"
-        svg += f'<circle cx="{centro_x}" cy="{centro_y}" r="{radio}" fill="{color_fill}" stroke="#94a3b8" stroke-width="4"/>'
-    else:
-        for i in range(cortes):
-            angulo_inicio = (2 * math.pi / cortes) * i - math.pi / 2
-            angulo_fin = (2 * math.pi / cortes) * (i + 1) - math.pi / 2
-            x1 = centro_x + radio * math.cos(angulo_inicio)
-            y1 = centro_y + radio * math.sin(angulo_inicio)
-            x2 = centro_x + radio * math.cos(angulo_fin)
-            y2 = centro_y + radio * math.sin(angulo_fin)
-            fill_actual = color_pintado if i < pintados else "#475569"
-            svg += f'<path d="M {centro_x} {centro_y} L {x1} {y1} A {radio} {radio} 0 0 1 {x2} {y2} Z" fill="{fill_actual}" stroke="#1e293b" stroke-width="2"/>'
-    svg += f"""
-        <circle cx="{centro_x}" cy="{centro_y}" r="{radio}" fill="none" stroke="#cbd5e1" stroke-width="3" stroke-dasharray="6,4"/>
-    </svg>
-    """
-    return svg
-
-def modulo_fracciones_final():
-    st.title("🛡️ El Taller de Escudos (Fracciones)")
-    
-    sub_tema = st.radio(
-        "Selecciona tu entrenamiento:",
-        ["Los Escudos del Rey (Equivalencia)", "El Escribano Real (Simplificación)"],
-        horizontal=True
-    )
-    st.divider()
-
-    if sub_tema == "Los Escudos del Rey (Equivalencia)":
-        st.markdown("""
-        ### 🎨 Fracciones Equivalentes
-        Imagina que el Rey manda pintar de **rojo** la mitad de los escudos del ejército. 
-        No importa si cortas el escudo en **2 pedazos grandes** o en **8 cachitos pequeños**, ¡la cantidad de pintura final es exactamente la misma!
-        """)
-        tab_explicacion, tab_reto = st.tabs(["📖 Ver la regla visual", "🎯 ¡Pruébalo tú mismo!"])
-        
-        with tab_explicacion:
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.markdown("<center><b>1 / 2</b></center>", unsafe_allow_html=True)
-                components.html(f"<center>{generar_svg_escudo(2, 1)}</center>", height=210)
-            with col2:
-                st.markdown("<center><b>2 / 4</b></center>", unsafe_allow_html=True)
-                components.html(f"<center>{generar_svg_escudo(4, 2)}</center>", height=210)
-            with col3:
-                st.markdown("<center><b>4 / 8</b></center>", unsafe_allow_html=True)
-                components.html(f"<center>{generar_svg_escudo(8, 4)}</center>", height=210)
-
-        with tab_reto:
-            banco_equivalencias = [
-                {"base_c": 3, "base_p": 1, "texto": "1/3 de un escudo de Amatista", "color": "#a855f7"},
-                {"base_c": 4, "base_p": 3, "texto": "3/4 de un escudo de Esmeralda", "color": "#10b981"},
-                {"base_c": 5, "base_p": 2, "texto": "2/5 de un escudo de Oro Real", "color": "#f59e0b"}
-            ]
-            if 'reto_equiv' not in st.session_state:
-                st.session_state.reto_equiv = random.choice(banco_equivalencias)
-                st.session_state.v_equiv = 1
-                
-            req = st.session_state.reto_equiv
-            st.write(f"Crea una fracción equivalente a: **{req['texto']}**")
-            
-            c_plano, c_usuario = st.columns(2)
-            with c_plano:
-                components.html(f"<center>{generar_svg_escudo(req['base_c'], req['base_p'], req['color'])}</center>", height=210)
-            with c_usuario:
-                num_cortes = st.slider("¿Partes totales?", 1, 20, 6, key=f"sld_c_{st.session_state.v_equiv}")
-                num_pintados = st.slider("¿Partes pintadas?", 0, num_cortes, 1, key=f"sld_p_{st.session_state.v_equiv}")
-                components.html(f"<center>{generar_svg_escudo(num_cortes, num_pintados, req['color'])}</center>", height=210)
-                
-            with st.form(key=f"form_equiv_{st.session_state.v_equiv}"):
-                submit_eq = st.form_submit_button("⚔️ Presentar Escudo")
-                if submit_eq:
-                    # Corrección matemática cruzada limpia para evitar bloqueos por estados clonados
-                    if num_pintados * req['base_c'] == num_cortes * req['base_p'] and num_cortes != req['base_c']:
-                        st.success("¡FORJA PERFECTA! Tu escudo cubre exactamente la misma área.")
-                        st.balloons()
-                    elif num_cortes == req['base_c']:
-                        st.error("¡Es el mismo escudo! El Rey te pide forjar uno diferente pero equivalente (con más o menos cortes).")
-                    else:
-                        st.error("Los escudos no coinciden. Prueba ajustando los cortes y las partes pintadas.")
-
-            if st.button("🔄 Nuevo Reto Equivalencia"):
-                st.session_state.reto_equiv = random.choice([b for b in banco_equivalencias if b['texto'] != req['texto']])
-                st.session_state.v_equiv += 1
-                st.rerun()
-
-    elif sub_tema == "El Escribano Real (Simplificación)":
-        st.markdown("### 📝 Simplificar Fracciones")
-        
-        # --- NUEVA EXPLICACIÓN ACCESIBLE PARA EL USUARIO ---
-        st.info("""
-        📚 **Glosario del Escribano:**
-        * 🔝 **Numerador (Número de arriba):** Te dice cuántas partes del escudo están pintadas.
-        * 🔜 **Denominador (Número de abajo):** Te dice en cuántas partes en total se cortó el escudo.
-        * ✒️ **Simplificar:** Significa hacer los números más pequeños dividiendo arriba y abajo entre el mismo número ($2, 3, 5...$), hasta que ya no se pueda encoger más. ¡La figura sigue representando la misma cantidad!
-        """)
-        
-        tab_explicacion, tab_reto = st.tabs(["📖 Ver ejemplo", "🎯 ¡Pruébalo tú mismo!"])
-        
-        with tab_explicacion:
-            st.markdown("""
-            **Ejemplo Práctico:** Si un escudo tiene **4/8** pintado (4 de arriba, 8 de abajo):
-            1. Dividimos ambos entre 2: $4 \\div 2 = 2$ y $8 \\div 2 = 4$. Nos queda **2/4**.
-            2. Volvemos a dividir entre 2: $2 \\div 2 = 1$ y $4 \\div 2 = 2$. Nos queda **1/2**.  
-            ¡**1/2** es la mínima expresión!
-            """)
-        
-        with tab_reto:
-            banco_simplificar = [
-                {"original_p": 6, "original_c": 18, "ans_p": 1, "ans_c": 3},
-                {"original_p": 8, "original_c": 12, "ans_p": 2, "ans_c": 3},
-                {"original_p": 5, "original_c": 15, "ans_p": 1, "ans_c": 3},
-                {"original_p": 4, "original_c": 10, "ans_p": 2, "ans_c": 5}
-            ]
-            if 'reto_simp' not in st.session_state:
-                st.session_state.reto_simp = random.choice(banco_simplificar)
-                st.session_state.v_simp = 1
-                
-            simp = st.session_state.reto_simp
-            
-            banner_resuelve_lo_siguiente()
-            st.warning(f"Simplifica hasta su mínima expresión la fracción: **{simp['original_p']}/{simp['original_c']}**")
-            components.html(f"<center>{generar_svg_escudo(simp['original_c'], simp['original_p'], '#38bdf8')}</center>", height=210)
-            
-            with st.form(key=f"form_simp_{st.session_state.v_simp}"):
-                user_p = st.number_input("Numerador 🔝 (Número de arriba)", step=1, value=None, placeholder="Partes pintadas simplificadas")
-                user_c = st.number_input("Denominador 🔜 (Número de abajo)", step=1, value=None, placeholder="Cortes totales simplificados")
-                if st.form_submit_button("✒️ Sellar Registro"):
-                    if user_p == simp['ans_p'] and user_c == simp['ans_c']:
-                        st.success("¡EXCELENTE TRABAJO! Has encontrado la mínima expresión del pergamino.")
-                        st.balloons()
-                    elif user_p is not None and user_c is not None and user_p * simp['original_c'] == user_c * simp['original_p']:
-                        st.error("¡Vas por buen camino y es equivalente, pero aún se puede simplificar más! Reduce los números al máximo.")
-                    else:
-                        st.error("Esos números no corresponden a la simplificación. Divide arriba y abajo entre el mismo factor.")
-                        
-            if st.button("🔄 Siguiente Pergamino"):
-                st.session_state.reto_simp = random.choice([b for b in banco_simplificar if b['original_c'] != simp['original_c']])
-                st.session_state.v_simp += 1
-                st.rerun()
-
-
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
     "Duelo de Sacos", 
@@ -825,7 +668,6 @@ lista_temas = [
     "Leyes del Trono (Jerarquía Básica)",
     "Asalto a Fortalezas (Agrupación)",
     "Reglas del Reino (MCM y MCD)",
-    "Fracciones (Fase 1)",
     "Sistemas 2x2",
     "Estadística",
     "Magia del Punto",
@@ -866,14 +708,6 @@ with st.sidebar:
         
         **🌱 Raíz Cuadrada (√):**
         * **$\\sqrt{25}$** -> Es la operación al revés. Si te dan un piso cuadrado de $25$ bloques y te preguntan: *¿Cuánto mide su pared de largo?*, la respuesta es $5$.
-
-        <hr style="border-color: rgba(255,255,255,0.1);">
-
-        **🛡️ Fracciones (Conceptos Clave):**
-        * **Numerador (Arriba):** Las piezas seleccionadas, comidas o coloreadas.
-        * **Denominador (Abajo):** El total de partes iguales en las que cortaste la unidad.
-        * **Fracciones Equivalentes:** Fracciones que se escriben diferente pero representan la misma cantidad o porción visual.
-        * **Simplificar:** Dividir tanto el número de arriba como el de abajo por un mismo divisor común hasta reducirlos a su mínima expresión.
         """, unsafe_allow_html=True)
 
 
@@ -903,7 +737,5 @@ elif seleccion_final == "Regla de Tres":
     modulo_regla_de_tres()
 elif seleccion_final == "Reglas del Reino (MCM y MCD)":
     modulo_divisibilidad_streamlit()
-elif seleccion_final == "Fracciones (Fase 1)":
-    modulo_fracciones_final()
 else: 
     modulo_geometria_castillo()
