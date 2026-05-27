@@ -662,6 +662,15 @@ def modulo_geometria_castillo():
             st.rerun()
 
 # --- NUEVO MÓDULO: POTENCIAS BÁSICAS ---
+# Inserta esto al inicio de tus módulos de potencias
+def traductor_de_notacion(base, exp):
+    st.markdown(f"""
+    <div style="background-color: #2d3748; padding: 10px; border-radius: 8px; border: 1px solid #4a5568;">
+        <p style="margin:0; font-size: 14px; color: #a0aec0;">Traductor de examen:</p>
+        <h3 style="margin:0; color: #e2e8f0;">{base}<sup>{exp}</sup>  <span style="font-size: 18px; color: #cbd5e0;">es lo mismo que escribir</span>  {base}^{exp}</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
 def modulo_potencias_basicas():
     st.title("📦 El Almacén de las Cajas Infinitas")
     
@@ -705,22 +714,21 @@ def modulo_potencias_leyes():
     
     st.markdown(f"### Operación: ${base}^{exp1} \\times {base}^{exp2}$")
     
-    if st.button("¡Fusionar!"):
-        # Animación de la "fusión"
-        placeholder = st.empty()
-        
-        # Paso 1: Mostrar el despliegue
-        parte1 = " × ".join([str(base)] * exp1)
-        parte2 = " × ".join([str(base)] * exp2)
-        placeholder.markdown(f"**Despliegue:** ({parte1}) × ({parte2})")
-        time.sleep(1.5)
-        
-        # Paso 2: Mostrar el resultado unificado
-        total_exp = exp1 + exp2
-        final = " × ".join([str(base)] * total_exp)
-        placeholder.markdown(f"**¡Fusión!:** {final} = {base}^{total_exp}")
-        
-        st.success(f"La respuesta es {base}^{total_exp}")
+    # Modificación en modulo_potencias_leyes()
+if st.button("¡Fusionar!"):
+    placeholder = st.empty()
+    
+    # Animación de suma de exponentes
+    placeholder.markdown(f"### Paso 1: Unimos las cadenas...")
+    time.sleep(1)
+    
+    # Visualizamos la suma
+    placeholder.markdown(f"### Paso 2: Sumamos los exponentes: {exp1} + {exp2} = **{exp1 + exp2}**")
+    time.sleep(1.5)
+    
+    # Resultado final
+    final = " × ".join([str(base)] * (exp1 + exp2))
+    placeholder.markdown(f"### Resultado Final: {base}^{exp1 + exp2}")
         
     st.warning("""
     **El puente a la fórmula:**
