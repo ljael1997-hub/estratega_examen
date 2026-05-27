@@ -661,21 +661,12 @@ def modulo_geometria_castillo():
             st.session_state.pop('pregunta_pit', None)
             st.rerun()
 
-# --- NUEVO MÓDULO: POTENCIAS BÁSICAS ---
-# Inserta esto al inicio de tus módulos de potencias
-def traductor_de_notacion(base, exp):
-    st.markdown(f"""
-    <div style="background-color: #2d3748; padding: 10px; border-radius: 8px; border: 1px solid #4a5568;">
-        <p style="margin:0; font-size: 14px; color: #a0aec0;">Traductor de examen:</p>
-        <h3 style="margin:0; color: #e2e8f0;">{base}<sup>{exp}</sup>  <span style="font-size: 18px; color: #cbd5e0;">es lo mismo que escribir</span>  {base}^{exp}</h3>
-    </div>
-    """, unsafe_allow_html=True)
-
+# --- MÓDULO: POTENCIAS BÁSICAS ---
 def modulo_potencias_basicas():
     st.title("📦 El Almacén de las Cajas Infinitas")
     
     base = st.slider("Elige la base:", 1, 10, 4)
-    exponente = st.slider("Elige cuántas veces se repite:", 1, 5, 3)
+    exponente = st.slider("Elige cuántas veces se repite:", 1, 6, 3) # Rango hasta 6
     
     st.markdown("---")
     st.write("### 📝 Cómo lo verás en tu examen:")
@@ -689,45 +680,31 @@ def modulo_potencias_basicas():
             resultado *= base
             texto_animado = " × ".join([str(base)] * i)
             placeholder.markdown(f"### Proceso: {texto_animado} = {resultado}")
-            time.sleep(0.7) # Esto ya no dará error porque importamos 'time'
-        
+            time.sleep(0.7)
         st.success(f"¡Listo! {base} multiplicado {exponente} veces es: **{resultado}**")
         
-    st.info("""
-    💡 **Tip del Estratega:**
-    Si ves $4^3$, **no multipliques 4 por 3**. 
-    ¡Detente! Mira el número pequeño (la orden) y di: 
-    'El 4 se repite como factor 3 veces'.
-    """)
+    st.info("💡 **Tip:** Si ves 4³, no multipliques 4 por 3. ¡Es una orden de repetir el 4, tres veces!")
 
+# --- MÓDULO: POTENCIAS LEYES ---
 def modulo_potencias_leyes():
-    def modulo_potencias_leyes():
-    st.subheader("Leyes de los exponentes: Multiplicación")
+    st.subheader("🔗 Leyes de los exponentes: Multiplicación")
 
-    # 1. Input: Selectores de exponentes (hasta 6)
     col1, col2 = st.columns(2)
     with col1:
         base = st.number_input("Base:", value=2, min_value=1)
-    with col2:
         exp1 = st.slider("Exponente A:", 1, 6, 2)
+    with col2:
         exp2 = st.slider("Exponente B:", 1, 6, 3)
 
-    # 2. Diccionario / Nota de referencia (siempre visible)
     st.info(f"""
     **Referencia de examen:**
-    En el papel verás: {base}<sup>{exp1}</sup> · {base}<sup>{exp2}</sup>
-    En la computadora escribimos: `{base}^{exp1} * {base}^{exp2}`
+    {base}<sup>{exp1}</sup> · {base}<sup>{exp2}</sup>  es igual a `{base}^{exp1} * {base}^{exp2}`
     """)
 
-    # 3. Acción (Botón al final de los inputs)
     if st.button("¡Fusionar exponentes!"):
-        with st.spinner("Calculando..."):
-            time.sleep(1) # Pequeña pausa para efecto visual
-            
-            # Explicación paso a paso
+        with st.spinner("Fusionando..."):
+            time.sleep(1)
             st.write(f"Sumando exponentes: {exp1} + {exp2} = **{exp1 + exp2}**")
-            
-            # Resultado final
             st.success(f"Resultado: {base}^{exp1 + exp2}")
             st.latex(f"{base}^{{{exp1}}} \\cdot {base}^{{{exp2}}} = {base}^{{{exp1 + exp2}}}")
 
