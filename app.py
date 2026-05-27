@@ -6,7 +6,6 @@ import statistics
 import math
 
 # Importaciones de módulos externos
-from modulos_matematicos import modulo_potencias_basicas, modulo_potencias_leyes
 from animacion_sustitucion import animacion_sustitucion
 from animacion_porcentaje import modulo_porcentajes_streamlit
 from animacion_porcentajes_combinados import modulo_combinados_streamlit
@@ -728,11 +727,12 @@ def modulo_potencias_leyes():
     ¿Viste qué pasó? Los exponentes solo se sumaron porque las 'cadenas' de multiplicaciones se unieron.
     **Fórmula para tu acordeón mental:** $a^m \\times a^n = a^{m+n}$
     """)
-    
+
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
     "Duelo de Sacos", 
     "Potencias (Nivel 1)",
+    "Potencias leyes (Nivel 2)",
     "La Forja (Potencias y Raíces)", 
     "Leyes del Trono (Jerarquía Básica)",
     "Asalto a Fortalezas (Agrupación)",
@@ -810,3 +810,5 @@ elif seleccion_final == "Geometría":
     modulo_geometria_castillo()
 elif seleccion_final == "Potencias (Nivel 1)":
     modulo_potencias_basicas()
+elif seleccion_final == "Potencias leyes (Nivel 2)":
+    modulo_potencias_leyes()
