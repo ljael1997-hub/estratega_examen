@@ -94,40 +94,68 @@ def modulo_sacos():
     st.write("")
 
     st.write("👇 **Paso 1: Separa tu dinero de tus deudas.**")
-    col1, col2 = st.columns(2)
     
-    with col1:
-        st.subheader(TEXTO_POS)
-        st.text_input("Anota los positivos aquí:", key=f"txt_v_{gid}", placeholder="Ej: +5 +10")
-        user_verde = st.number_input("¿Cuánto dinero tienes en total?", step=1, key=f"num_v_{gid}", value=None, placeholder="Suma los positivos")
+    with st.form(key=f"form_sacos_p1_{gid}"):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader(TEXTO_POS)
+            st.text_input("Anota los positivos aquí:", key=f"txt_v_{gid}", placeholder="Ej: +5 +10")
+            # Cambiado a text_input para escritura puramente manual sin botones de +/-
+            user_verde_str = st.text_input("¿Cuánto dinero tienes en total?", key=f"num_v_{gid}", placeholder="Suma los positivos")
+            
+        with col2:
+            st.subheader(TEXTO_NEG)
+            st.text_input("Anota los negativos aquí:", key=f"txt_r_{gid}", placeholder="Ej: -8 -4")
+            # Cambiado a text_input para escritura puramente manual sin botones de +/-
+            user_rojo_str = st.text_input("¿Cuánto debes en total? (Usa el signo -)", key=f"num_r_{gid}", placeholder="Suma los negativos")
         
-    with col2:
-        st.subheader(TEXTO_NEG)
-        st.text_input("Anota los negativos aquí:", key=f"txt_r_{gid}", placeholder="Ej: -8 -4")
-        user_rojo = st.number_input("¿Cuánto debes en total? (Usa el signo -)", step=1, key=f"num_r_{gid}", value=None, placeholder="Suma los negativos")
+        btn_revisar = st.form_submit_button("💰 Revisar mis Sacos")
+        
+        if btn_revisar:
+            # Procesamos las entradas manuales y las convertimos a números de forma segura
+            try:
+                if user_verde_str.strip() == "" or user_rojo_str.strip() == "":
+                    st.warning("⚠️ Por favor, llena ambos totales antes de revisar.")
+                else:
+                    user_verde = int(user_verde_str.strip())
+                    user_rojo = int(user_rojo_str.strip())
+                    
+                    total_v = sum([n for n in soldados if n > 0])
+                    total_r = sum([n for n in soldados if n < 0])
+                    
+                    if user_verde == total_v and user_rojo == total_r:
+                        st.session_state.revisado = True
+                        st.success("¡Perfecto! Tus cuentas están claras. Ahora ve al Paso 2 abajo.")
+                    else:
+                        st.error(f"Algo no cuadra. Los positivos suman {total_v} y los negativos suman {total_r}.")
+            except ValueError:
+                st.error("❌ ¡Cuidado! En las preguntas de total solo debes escribir números enteros (ejemplo: 15 o -12). No agregues letras ni espacios de más.")
 
-    if st.button("💰 Revisar mis Sacos"):
-        total_v = sum([n for n in soldados if n > 0])
-        total_r = sum([n for n in soldados if n < 0])
-        if user_verde == total_v and user_rojo == total_r:
-            st.success("¡Perfecto! Tus cuentas están claras. Ahora ve al Paso 2.")
-            st.session_state.revisado = True
-            st.rerun()
-        else:
-            st.error(f"Algo no cuadra. Los positivos suman {total_v} y los negativos suman {total_r}.")
-
-    if st.session_state.get('revisado'):
+    if st.session_state.revisado:
         st.divider()
         st.write("👇 **Paso 2: Paga tus deudas con lo que tienes.**")
         res_final = sum(soldados)
-        user_final = st.number_input("¿Cuánto dinero te queda al final? (Pon el signo)", step=1, key=f"final_{gid}", value=None)
-        if st.button("🏟️ ¡Ejecutar Duelo Final!"):
-            if user_final == res_final:
-                st.balloons()
-                st.success(f"¡LOGRADO! El resultado es {res_final}.")
-            else:
-                st.error("El resultado final no es correcto. Intenta la resta de los sacos otra vez.")
+        
+        with st.form(key=f"form_sacos_p2_{gid}"):
+            # También cambiamos la respuesta final a entrada de texto manual interactiva
+            user_final_str = st.text_input("¿Cuánto dinero te queda al final? (Pon el signo si es negativo)", key=f"final_{gid}", placeholder="Ej: 5 o -3")
+            btn_duelo = st.form_submit_button("🏟️ ¡Ejecutar Duelo Final!")
+            
+            if btn_duelo:
+                try:
+                    if user_final_str.strip() == "":
+                        st.warning("⚠️ Escribe tu resultado final antes de ejecutar el duelo.")
+                    else:
+                        user_final = int(user_final_str.strip())
+                        if user_final == res_final:
+                            st.balloons()
+                            st.success(f"¡LOGRADO! El resultado es {res_final}.")
+                        else:
+                            st.error("El resultado final no es correcto. Intenta la resta de los sacos otra vez.")
+                except ValueError:
+                    st.error("❌ Escribe un número válido para el resultado final.")
 
+    st.write("")
     if st.button("🔄 Nuevos Números", key="btn_nuevos_sacos"):
         st.session_state.game_id += 1
         st.session_state.pop('soldados', None)
