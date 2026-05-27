@@ -58,82 +58,86 @@ def modulo_fracciones_streamlit():
     )
     st.divider()
 
-    # --- 1. SUB-TEMA: EQUIVALENCIA (REDISEÑADO PEDAGÓGICAMENTE) ---
-    if sub_tema == "Los Escudos del Rey (Equivalencia)":
-        st.markdown("""
-        ### 🎨 Fracciones Equivalentes
-        Imagina que el Rey manda pintar de **rojo** la mitad de los escudos del ejército. 
-        No importa si cortas el escudo en **2 pedazos grandes** o en **8 cachitos pequeños**, ¡al final la cantidad de pintura roja que protege al soldado es exactamente la misma!
-        """)
-        
-        tab_explicacion, tab_reto = st.tabs(["📖 Ver la regla visual", "🎯 ¡Pruébalo tú mismo!"])
-        
-        with tab_explicacion:
-            st.markdown("#### Diferentes números, misma protección")
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.markdown("<center><b>1 / 2</b></center>", unsafe_allow_html=True)
-                st.components.v1.html(f"<center>{generar_svg_escudo(2, 1)}</center>", height=210)
-            with col2:
-                st.markdown("<center><b>2 / 4</b></center>", unsafe_allow_html=True)
-                st.components.v1.html(f"<center>{generar_svg_escudo(4, 2)}</center>", height=210)
-            with col3:
-                st.markdown("<center><b>4 / 8</b></center>", unsafe_allow_html=True)
-                st.components.v1.html(f"<center>{generar_svg_escudo(8, 4)}</center>", height=210)
-            st.info("💡 **Conclusión:** Las fracciones son **equivalentes** porque el escudo está cubierto en la misma cantidad.")
+    # --- 1. SUB-TEMA: EQUIVALENCIA (CON LA REGLA DEL DOBLE o TRIPLE) ---
+if sub_tema == "Los Escudos del Rey (Equivalencia)":
+    st.markdown("""
+    ### 🎨 Fracciones Equivalentes
+    Imagina que el Rey manda pintar de **rojo** la mitad de los escudos del ejército. 
+    No importa si cortas el escudo en **2 pedazos grandes** o en **8 cachitos pequeños**, ¡al final la cantidad de pintura roja que protege al soldado es exactamente la misma!
+    """)
+    
+    tab_explicacion, tab_reto = st.tabs(["📖 Ver la regla visual", "🎯 ¡Pruébalo tú mismo!"])
+    
+    with tab_explicacion:
+        st.markdown("#### Diferentes números, misma protección")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown("<center><b>1 / 2</b></center>", unsafe_allow_html=True)
+            st.components.v1.html(f"<center>{generar_svg_escudo(2, 1)}</center>", height=210)
+        with col2:
+            st.markdown("<center><b>2 / 4</b></center>", unsafe_allow_html=True)
+            st.components.v1.html(f"<center>{generar_svg_escudo(4, 2)}</center>", height=210)
+        with col3:
+            st.markdown("<center><b>4 / 8</b></center>", unsafe_allow_html=True)
+            st.components.v1.html(f"<center>{generar_svg_escudo(8, 4)}</center>", height=210)
 
-        with tab_reto:
-            # El banco ahora incluye multiplicadores precalculados para asegurar soluciones enteras elegantes
-            banco_equivalencias = [
-                {"base_c": 3, "base_p": 1, "texto": "1/3 de un escudo mágico de Amatista", "color": "#a855f7", "opciones_cortes": [6, 9, 12]},
-                {"base_c": 4, "base_p": 3, "texto": "3/4 de un escudo pesado de Esmeralda", "color": "#10b981", "opciones_cortes": [8, 12, 16]},
-                {"base_c": 5, "base_p": 2, "texto": "2/5 de un escudo místico de Oro Real", "color": "#f59e0b", "opciones_cortes": [10, 15, 20]},
-                {"base_c": 2, "base_p": 1, "texto": "1/2 de un escudo de Infantería de Rubí", "color": "#ef4444", "opciones_cortes": [4, 6, 8, 10]}
-            ]
+    with tab_reto:
+        banco_equivalencias = [
+            {"base_c": 3, "base_p": 1, "texto": "1/3 de un escudo mágico de Amatista", "color": "#a855f7"},
+            {"base_c": 4, "base_p": 3, "texto": "3/4 de un escudo pesado de Esmeralda", "color": "#10b981"},
+            {"base_c": 5, "base_p": 2, "texto": "2/5 de un escudo místico de Oro Real", "color": "#f59e0b"},
+            {"base_c": 2, "base_p": 1, "texto": "1/2 de un escudo de Infantería de Rubí", "color": "#ef4444"}
+        ]
+        
+        if 'reto_equiv' not in st.session_state:
+            st.session_state.reto_equiv = random.choice(banco_equivalencias)
+            # APLICAMOS TU IDEA: El multiplicador siempre será exactamente el doble (2) o el triple (3)
+            st.session_state.multiplicador = random.choice([2, 3])
+            st.session_state.v_equiv = 1
             
-            if 'reto_equiv' not in st.session_state:
-                st.session_state.reto_equiv = random.choice(banco_equivalencias)
-                # Elegimos un número de cortes forzado que garantice éxito matemático entero
-                st.session_state.cortes_forzados = random.choice(st.session_state.reto_equiv['opciones_cortes'])
-                st.session_state.v_equiv = 1
-                
-            req = st.session_state.reto_equiv
-            num_cortes = st.session_state.cortes_forzados
-            gid = st.session_state.v_equiv
-            
-            st.markdown(f"#### 🎯 Tu Misión: Forjar un escudo equivalente")
-            st.write(f"El capitán te pide replicar el plano original: **{req['texto']}**.")
-            
-            # Guía explícita al alumno para evitar la frustración de proporciones raras
-            st.info(f"🔨 **Orden de la Forja:** Para este reto, el Capitán te exige estructurar tu escudo en exactamente **{num_cortes} partes totales**. ¡Calcula cuántas debes pintar!")
+        req = st.session_state.reto_equiv
+        factor = st.session_state.multiplicador
+        
+        # El número de cortes del usuario se calcula dinámicamente multiplicando la base
+        num_cortes = req['base_c'] * factor
+        gid = st.session_state.v_equiv
+        
+        st.markdown(f"#### 🎯 Tu Misión: Forjar un escudo equivalente")
+        st.write(f"El capitán te pide replicar el plano original: **{req['texto']}**.")
+        
+        # Explicación pedagógica basada en tu cambio:
+        if factor == 2:
+            st.info(f"⚔️ **Instrucción del Taller:** Para este escudo, utilizaremos el **doble** de cortes que el plano original. El plano tiene {req['base_c']} partes, así que tu escudo tendrá exactamente **{num_cortes} partes totales**. ¡Encuentra cuántas debes pintar!")
+        else:
+            st.info(f"⚔️ **Instrucción del Taller:** Para este escudo, utilizaremos el **triple** de cortes que el plano original. El plano tiene {req['base_c']} partes, así que tu escudo tendrá exactamente **{num_cortes} partes totales**. ¡Encuentra cuántas debes pintar!")
 
-            col_plano, col_usuario = st.columns(2)
-            with col_plano:
-                st.markdown(f"<center><b>📐 Plano Original ({req['base_p']}/{req['base_c']})</b></center>", unsafe_allow_html=True)
-                st.components.v1.html(f"<center>{generar_svg_escudo(req['base_c'], req['base_p'], req['color'])}</center>", height=210)
-                
-            with col_usuario:
-                st.markdown(f"<center><b>🔨 Tu Escudo ({num_cortes} cortes totales)</b></center>", unsafe_allow_html=True)
-                # El slider de cortes se quita o se bloquea implícitamente, dejando solo interactivo el de pintar
-                num_pintados = st.slider("¿Cuántas partes vas a pintar?", min_value=0, max_value=num_cortes, value=1, key=f"pintados_fixed_{gid}")
-                st.components.v1.html(f"<center>{generar_svg_escudo(num_cortes, num_pintados, req['color'])}</center>", height=210)
-                
-            with st.form(key=f"form_equiv_fixed_{gid}"):
-                st.write(f"Tu escudo actual representa la fracción: **{num_pintados} / {num_cortes}**")
-                submit_eq = st.form_submit_button("⚔️ Presentar Escudo al Capitán")
-                
-                if submit_eq:
-                    if num_pintados * req['base_c'] == num_cortes * req['base_p']:
-                        st.success(f"¡FORJA PERFECTA! El escudo con {num_pintados}/{num_cortes} piezas protege exactamente igual que el de {req['base_p']}/{req['base_c']}.")
-                        st.balloons()
-                    else:
-                        st.error("No es equivalente. Compara visualmente las rebanadas coloreadas e intenta de nuevo.")
-                        
-            if st.button("🔄 Cambiar de Plano (Nuevo Reto)", key="btn_new_eq"):
-                st.session_state.reto_equiv = random.choice([b for b in banco_equivalencias if b['texto'] != req['texto']])
-                st.session_state.cortes_forzados = random.choice(st.session_state.reto_equiv['opciones_cortes'])
-                st.session_state.v_equiv += 1
-                st.rerun()
+        col_plano, col_usuario = st.columns(2)
+        with col_plano:
+            st.markdown(f"<center><b>📐 Plano Original ({req['base_p']}/{req['base_c']})</b></center>", unsafe_allow_html=True)
+            st.components.v1.html(f"<center>{generar_svg_escudo(req['base_c'], req['base_p'], req['color'])}</center>", height=210)
+            
+        with col_usuario:
+            st.markdown(f"<center><b>🔨 Tu Escudo ({num_cortes} cortes totales)</b></center>", unsafe_allow_html=True)
+            # El slider de pintar ahora es súper intuitivo porque los cortes están perfectamente coordinados
+            num_pintados = st.slider("¿Cuántas partes vas a pintar?", min_value=0, max_value=num_cortes, value=1, key=f"pintados_fixed_{gid}")
+            st.components.v1.html(f"<center>{generar_svg_escudo(num_cortes, num_pintados, req['color'])}</center>", height=210)
+            
+        with st.form(key=f"form_equiv_fixed_{gid}"):
+            st.write(f"Tu escudo actual representa la fracción: **{num_pintados} / {num_cortes}**")
+            submit_eq = st.form_submit_button("⚔️ Presentar Escudo al Capitán")
+            
+            if submit_eq:
+                if num_pintados * req['base_c'] == num_cortes * req['base_p']:
+                    st.success(f"¡FORJA PERFECTA! Multiplicaste arriba y abajo por {factor}. La fracción {num_pintados}/{num_cortes} es equivalente a {req['base_p']}/{req['base_c']}.")
+                    st.balloons()
+                else:
+                    st.error("No es equivalente. Compara visualmente el espacio coloreado e intenta de nuevo.")
+                    
+        if st.button("🔄 Cambiar de Plano (Nuevo Reto)", key="btn_new_eq"):
+            st.session_state.reto_equiv = random.choice([b for b in banco_equivalencias if b['texto'] != req['texto']])
+            st.session_state.multiplicador = random.choice([2, 3])
+            st.session_state.v_equiv += 1
+            st.rerun()
 
     # --- 2. SUB-TEMA: SIMPLIFICACIÓN (CON CUADRO RESALTADO Y NOTACIÓN MATEMÁTICA) ---
     elif sub_tema == "El Escribano Real (Simplificación)":
