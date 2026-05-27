@@ -712,7 +712,7 @@ def modulo_potencias_leyes():
             time.sleep(1)
             st.write(f"Sumando exponentes: {exp1} + {exp2} = **{exp1 + exp2}**")
             st.success(f"Resultado: {base}^{exp1 + exp2}")
-            st.latex(f"{base}^{{{exp1}}} \\cdot {base}^{{{exp2}}} = {base}^{{{exp1 + exp2}}}")
+            st.latex(f"{base}^{{{exp1}}}")
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
