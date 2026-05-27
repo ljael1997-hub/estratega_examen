@@ -5,7 +5,7 @@ import streamlit.components.v1 as components
 import statistics
 import math
 
-# Importaciones de módulos externos
+# --- IMPORTACIONES ---
 from animacion_sustitucion import animacion_sustitucion
 from animacion_porcentaje import modulo_porcentajes_streamlit
 from animacion_porcentajes_combinados import modulo_combinados_streamlit
@@ -662,11 +662,17 @@ def modulo_geometria_castillo():
             st.rerun()
 
 # --- MÓDULO: POTENCIAS BÁSICAS ---
+def banner_resuelve_lo_siguiente():
+    st.markdown("""
+        <div style="background-color: rgba(220, 53, 69, 0.1); padding: 10px; border-radius: 6px; border-left: 5px solid #dc3545; margin: 15px 0 10px 0;">
+            <span style="color: #ff6b6b; font-weight: bold; font-size: 15px; letter-spacing: 0.5px;">🚨 RESUELVE LO SIGUIENTE:</span>
+        </div>
+    """, unsafe_allow_html=True)
+
 def modulo_potencias_basicas():
     st.title("📦 El Almacén de las Cajas Infinitas")
-    
     base = st.slider("Elige la base:", 1, 10, 4)
-    exponente = st.slider("Elige cuántas veces se repite:", 1, 6, 3) # Rango hasta 6
+    exponente = st.slider("Elige cuántas veces se repite:", 1, 6, 3)
     
     st.markdown("---")
     st.write("### 📝 Cómo lo verás en tu examen:")
@@ -682,18 +688,12 @@ def modulo_potencias_basicas():
             placeholder.markdown(f"### Proceso: {texto_animado} = {resultado}")
             time.sleep(0.7)
         st.success(f"¡Listo! {base} multiplicado {exponente} veces es: **{resultado}**")
-        
+    
     st.info("💡 **Tip:** Si ves 4³, no multipliques 4 por 3. ¡Es una orden de repetir el 4, tres veces!")
- # 2. Diccionario / Nota de referencia (siempre visible)
-    st.info(f"""
-    **Referencia de examen:**
-    En tu hoja verás: {base}<sup>{exp1}</sup> × {base}<sup>{exp2}</sup>
-    Esto equivale a: `{base}^{exp1} * {base}^{exp2}`
-    """)
 
-# --- MÓDULO: POTENCIAS LEYES ---
 def modulo_potencias_leyes():
-    st.subheader("🔗 Leyes de los exponentes: Multiplicación")
+    st.title("🔗 Nivel 2: La Fusión de Poderes")
+    st.subheader("Leyes de los exponentes: Multiplicación")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -704,40 +704,35 @@ def modulo_potencias_leyes():
 
     st.info(f"""
     **Referencia de examen:**
-    {base}<sup>{exp1}</sup> · {base}<sup>{exp2}</sup>  es igual a `{base}^{exp1} * {base}^{exp2}`
+    En el papel verás: {base}<sup>{exp1}</sup> · {base}<sup>{exp2}</sup>
+    En la computadora: `{base}^{exp1} * {base}^{exp2}`
     """)
 
     if st.button("¡Fusionar exponentes!"):
         with st.spinner("Fusionando..."):
             time.sleep(1)
             st.write(f"Sumando exponentes: {exp1} + {exp2} = **{exp1 + exp2}**")
-            st.success(f"Resultado: {base}^{exp1 + exp2}")
-            st.latex(f"{base}^{{{exp1}}}")
+            st.success(f"Resultado final: {base}^{exp1 + exp2}")
+            st.latex(f"{base}^{{{exp1}}} \\cdot {base}^{{{exp2}}} = {base}^{{{exp1 + exp2}}}")
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
-    "Duelo de Sacos", 
-    "Potencias (Nivel 1)",
-    "Potencias leyes (Nivel 2)",
-    "La Forja (Potencias y Raíces)", 
-    "Leyes del Trono (Jerarquía Básica)",
-    "Asalto a Fortalezas (Agrupación)",
-    "Reglas del Reino (MCM y MCD)",
-    "Sistemas 2x2",
-    "Estadística",
-    "Magia del Punto",
-    "Porcentajes Combinados",
-    "Regla de Tres",
-    "Geometría"
+    "Duelo de Sacos", "Potencias (Nivel 1)", "Potencias leyes (Nivel 2)",
+    "La Forja (Potencias y Raíces)", "Leyes del Trono (Jerarquía Básica)",
+    "Asalto a Fortalezas (Agrupación)", "Reglas del Reino (MCM y MCD)",
+    "Sistemas 2x2", "Estadística", "Magia del Punto", 
+    "Porcentajes Combinados", "Regla de Tres", "Geometría"
 ]
 
 with st.sidebar:
     st.title("La Estratega")
-    seleccion_final = st.radio(
-        "Entrenamiento:", 
-        lista_temas, 
-        key="nav_unica"
-    )
+    seleccion_final = st.radio("Entrenamiento:", lista_temas, key="nav_unica")
+    
+    with st.expander("📚 Acordeón: ¿Qué significan estas operaciones?"):
+        st.markdown("""
+        * **$5^2$** es lo mismo que escribir `5^2` en la computadora.
+        * **Regla:** La base y el exponente se separan con el símbolo `^`.
+        """)
 
 st.markdown("""
     <div style="background-color: #1e293b; padding: 15px; border-radius: 10px; border-left: 6px solid #f59e0b; margin-bottom: 20px; box-shadow: 0px 4px 10px rgba(0,0,0,0.3);">
@@ -769,6 +764,10 @@ with st.sidebar:
 # --- RENDERIZADO DE LOS JUEGOS ---
 if seleccion_final == "Duelo de Sacos": 
     modulo_sacos()
+elif seleccion_final == "Potencias (Nivel 1)":
+    modulo_potencias_basicas()
+elif seleccion_final == "Potencias leyes (Nivel 2)":
+    modulo_potencias_leyes()
 elif seleccion_final == "La Forja (Potencias y Raíces)":
     modulo_forja_streamlit()
 elif seleccion_final == "Leyes del Trono (Jerarquía Básica)":
@@ -794,7 +793,3 @@ elif seleccion_final == "Reglas del Reino (MCM y MCD)":
     modulo_divisibilidad_streamlit()
 elif seleccion_final == "Geometría":
     modulo_geometria_castillo()
-elif seleccion_final == "Potencias (Nivel 1)":
-    modulo_potencias_basicas()
-elif seleccion_final == "Potencias leyes (Nivel 2)":
-    modulo_potencias_leyes()
