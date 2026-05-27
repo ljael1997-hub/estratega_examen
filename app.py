@@ -664,35 +664,38 @@ def modulo_geometria_castillo():
 def modulo_potencias_basicas():
     st.title("📦 El Almacén de las Cajas Infinitas")
     
-    st.markdown("""
-    ### 📝 El Mito del Multiplicador
-    ¡Cuidado! El exponente **no multiplica** a la base. Es una instrucción de repetición.
-    * **Base:** El número protagonista.
-    * **Exponente:** El contador de veces que el protagonista se multiplica por sí mismo.
+    # Selector interactivo para que ellos mismos descubran el crecimiento
+    base = st.slider("Elige la base:", 1, 10, 4)
+    exponente = st.slider("Elige cuántas veces se repite:", 1, 5, 3)
+    
+    st.markdown("---")
+    st.write("### 📝 Cómo lo verás en tu examen:")
+    # Renderizado elegante de la notación
+    st.markdown(f"<h1 style='text-align: center; color: #FF4B4B;'>{base}<sup>{exponente}</sup></h1>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    if st.button("¡Ejecutar la orden de repetición!"):
+        # Aquí llamamos a la lógica de la animación
+        placeholder = st.empty()
+        resultado = 1
+        for i in range(1, exponente + 1):
+            resultado *= base
+            texto_animado = " × ".join([str(base)] * i)
+            placeholder.markdown(f"### Proceso: {texto_animado} = {resultado}")
+            time.sleep(0.7)
+        
+        st.success(f"¡Listo! {base} multiplicado {exponente} veces es: **{resultado}**")
+        
+    st.info("""
+    💡 **Tip del Estratega:**
+    Si ves $4^3$, **no multipliques 4 por 3**. 
+    ¡Detente! Mira el número pequeño (la orden) y di: 
+    'El 4 se repite como factor 3 veces'.
     """)
-    
-    if 'pregunta_pot' not in st.session_state:
-        st.session_state.pregunta_pot = random.choice([
-            {"q": "4^3", "op": ["4 * 3 = 12", "4 * 4 * 4 = 64"], "a": "4 * 4 * 4 = 64"},
-            {"q": "5^2", "op": ["5 * 2 = 10", "5 * 5 = 25"], "a": "5 * 5 = 25"},
-            {"q": "2^4", "op": ["2 * 4 = 8", "2 * 2 * 2 * 2 = 16"], "a": "2 * 2 * 2 * 2 = 16"}
-        ])
-    
-    p = st.session_state.pregunta_pot
-    st.write(f"### ¿Cuál es el desarrollo correcto de **{p['q']}**?")
-    
-    res = st.radio("Elige la opción correcta:", p['op'], index=None)
-    
-    if st.button("Revisar respuesta"):
-        if res == p['a']:
-            st.success("¡Exacto! El número se multiplica por sí mismo, no por el exponente.")
-            st.balloons()
-        else:
-            st.error("¡Cuidado, es una trampa clásica! El exponente nos dice cuántas veces multiplicar la base por sí misma.")
-            
-    if st.button("🔄 Nuevo Reto"):
-        st.session_state.pop('pregunta_pot', None)
-        st.rerun()
+
+# Y asegúrate de llamarlo en tu menú de navegación principal:
+# elif seleccion_final == "Potencias (Nivel 1)":
+#     modulo_potencias_basicas()
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
