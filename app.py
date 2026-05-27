@@ -6,6 +6,7 @@ import statistics
 import math
 
 # Importaciones de módulos externos
+from modulos_matematicos import modulo_potencias_basicas, modulo_potencias_leyes
 from animacion_sustitucion import animacion_sustitucion
 from animacion_porcentaje import modulo_porcentajes_streamlit
 from animacion_porcentajes_combinados import modulo_combinados_streamlit
@@ -691,6 +692,43 @@ def modulo_potencias_basicas():
     'El 4 se repite como factor 3 veces'.
     """)
 
+def modulo_potencias_leyes():
+    st.title("🔗 Nivel 2: La Fusión de Poderes")
+    
+    st.write("### Cuando multiplicas potencias de la misma base:")
+    # Visualizamos el problema
+    col1, col2 = st.columns(2)
+    with col1:
+        base = st.number_input("Base:", 2, 5, 3)
+        exp1 = st.slider("Exponente A:", 1, 3, 2)
+    with col2:
+        exp2 = st.slider("Exponente B:", 1, 3, 3)
+    
+    st.markdown(f"### Operación: ${base}^{exp1} \\times {base}^{exp2}$")
+    
+    if st.button("¡Fusionar!"):
+        # Animación de la "fusión"
+        placeholder = st.empty()
+        
+        # Paso 1: Mostrar el despliegue
+        parte1 = " × ".join([str(base)] * exp1)
+        parte2 = " × ".join([str(base)] * exp2)
+        placeholder.markdown(f"**Despliegue:** ({parte1}) × ({parte2})")
+        time.sleep(1.5)
+        
+        # Paso 2: Mostrar el resultado unificado
+        total_exp = exp1 + exp2
+        final = " × ".join([str(base)] * total_exp)
+        placeholder.markdown(f"**¡Fusión!:** {final} = {base}^{total_exp}")
+        
+        st.success(f"La respuesta es {base}^{total_exp}")
+        
+    st.warning("""
+    **El puente a la fórmula:**
+    ¿Viste qué pasó? Los exponentes solo se sumaron porque las 'cadenas' de multiplicaciones se unieron.
+    **Fórmula para tu acordeón mental:** $a^m \\times a^n = a^{m+n}$
+    """)
+    
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
     "Duelo de Sacos", 
