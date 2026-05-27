@@ -665,6 +665,7 @@ def modulo_geometria_castillo():
 lista_temas = [
     "Duelo de Sacos", 
     "La Forja (Potencias y Raíces)", 
+    "Potencias (Nivel 1)",
     "Leyes del Trono (Jerarquía Básica)",
     "Asalto a Fortalezas (Agrupación)",
     "Reglas del Reino (MCM y MCD)",
@@ -737,5 +738,7 @@ elif seleccion_final == "Regla de Tres":
     modulo_regla_de_tres()
 elif seleccion_final == "Reglas del Reino (MCM y MCD)":
     modulo_divisibilidad_streamlit()
-else: 
+elif seleccion_final == "Geometría":
     modulo_geometria_castillo()
+elif seleccion_final == "Potencias (Nivel 1)":
+    modulo_potencias_basicas()
