@@ -1,6 +1,6 @@
 import random
-import time
 import streamlit as st
+import time
 import streamlit.components.v1 as components
 import statistics
 import math
@@ -701,40 +701,35 @@ def modulo_potencias_basicas():
     """)
 
 def modulo_potencias_leyes():
-    st.title("🔗 Nivel 2: La Fusión de Poderes")
-    
-    st.write("### Cuando multiplicas potencias de la misma base:")
-    # Visualizamos el problema
+    def modulo_potencias_leyes():
+    st.subheader("Leyes de los exponentes: Multiplicación")
+
+    # 1. Input: Selectores de exponentes (hasta 6)
     col1, col2 = st.columns(2)
     with col1:
-        base = st.number_input("Base:", 2, 5, 3)
-        exp1 = st.slider("Exponente A:", 1, 3, 2)
+        base = st.number_input("Base:", value=2, min_value=1)
     with col2:
-        exp2 = st.slider("Exponente B:", 1, 3, 3)
-    
-    st.markdown(f"### Operación: ${base}^{exp1} \\times {base}^{exp2}$")
-    
-    # Modificación en modulo_potencias_leyes()
-if st.button("¡Fusionar!"):
-    placeholder = st.empty()
-    
-    # Animación de suma de exponentes
-    placeholder.markdown(f"### Paso 1: Unimos las cadenas...")
-    time.sleep(1)
-    
-    # Visualizamos la suma
-    placeholder.markdown(f"### Paso 2: Sumamos los exponentes: {exp1} + {exp2} = **{exp1 + exp2}**")
-    time.sleep(1.5)
-    
-    # Resultado final
-    final = " × ".join([str(base)] * (exp1 + exp2))
-    placeholder.markdown(f"### Resultado Final: {base}^{exp1 + exp2}")
-        
-    st.warning("""
-    **El puente a la fórmula:**
-    ¿Viste qué pasó? Los exponentes solo se sumaron porque las 'cadenas' de multiplicaciones se unieron.
-    **Fórmula para tu acordeón mental:** $a^m \\times a^n = a^{m+n}$
+        exp1 = st.slider("Exponente A:", 1, 6, 2)
+        exp2 = st.slider("Exponente B:", 1, 6, 3)
+
+    # 2. Diccionario / Nota de referencia (siempre visible)
+    st.info(f"""
+    **Referencia de examen:**
+    En el papel verás: {base}<sup>{exp1}</sup> · {base}<sup>{exp2}</sup>
+    En la computadora escribimos: `{base}^{exp1} * {base}^{exp2}`
     """)
+
+    # 3. Acción (Botón al final de los inputs)
+    if st.button("¡Fusionar exponentes!"):
+        with st.spinner("Calculando..."):
+            time.sleep(1) # Pequeña pausa para efecto visual
+            
+            # Explicación paso a paso
+            st.write(f"Sumando exponentes: {exp1} + {exp2} = **{exp1 + exp2}**")
+            
+            # Resultado final
+            st.success(f"Resultado: {base}^{exp1 + exp2}")
+            st.latex(f"{base}^{{{exp1}}} \\cdot {base}^{{{exp2}}} = {base}^{{{exp1 + exp2}}}")
 
 # --- CONTROL DE NAVEGACIÓN GLOBAL ---
 lista_temas = [
